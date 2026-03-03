@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { authAPI } from '../api/auth.api';
 import Navbar from '@/shared/components/Navbar';
@@ -11,7 +11,6 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const from = searchParams.get('from') || '/';
@@ -26,7 +25,7 @@ function LoginPage() {
       await queryClient.invalidateQueries({ queryKey: ['auth', 'status'] });
       await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
 
-      router.replace(from);
+      window.location.href = from;
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión');
     } finally {
