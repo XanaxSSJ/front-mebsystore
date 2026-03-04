@@ -1,12 +1,15 @@
-"use client"
+"use client";
 
-import { Suspense } from "react"
-import OrdersPage from "@/features/orders/pages/OrdersPage"
+import { Suspense } from "react";
+import AuthGuard from "@/features/auth/components/AuthGuard";
+import OrdersPage from "@/features/orders/pages/OrdersPage";
 
 export default function Page() {
-    return (
-        <Suspense fallback={null}>
-            <OrdersPage />
-        </Suspense>
-    )
+  return (
+    <AuthGuard>
+      <Suspense fallback={null}>
+        <OrdersPage />
+      </Suspense>
+    </AuthGuard>
+  );
 }
