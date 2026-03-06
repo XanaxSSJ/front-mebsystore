@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Navbar from '@/shared/components/Navbar';
@@ -38,98 +38,123 @@ function CategoryPage() {
     );
   }, [productsData, category]);
 
+  const [sortOrder, setSortOrder] = useState('newest');
+
   const filteredProducts = useMemo(() => {
-    const query = searchQuery.trim();
-    if (!query) return categoryProducts;
-    return categoryProducts.filter((product) =>
-      productMatchesQuery(product, query),
-    );
-  }, [categoryProducts, searchQuery]);
+    let result = [...categoryProducts];
+    const query = searchQuery.trim().toLowerCase();
+
+    if (query) {
+      result = result.filter((product) => productMatchesQuery(product, query));
+    }
+
+    if (sortOrder === 'price-asc') {
+      result.sort((a, b) => a.basePrice - b.basePrice);
+    } else if (sortOrder === 'price-desc') {
+      result.sort((a, b) => b.basePrice - a.basePrice);
+    } else if (sortOrder === 'newest') {
+      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    return result;
+  }, [categoryProducts, searchQuery, sortOrder]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <div className="min-h-screen flex flex-col bg-background-light text-surface selection:bg-primary/20">
       <Navbar />
 
-      <main className="flex-1 w-full pt-24 pb-20">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-32">
-              <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-400 animate-pulse">Loading category...</p>
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8">
+        <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
+          <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
+          <span className="material-symbols-outlined text-xs">chevron_right</span>
+          <Link href="/productos" className="hover:text-primary transition-colors">Colecciones</Link>
+          <span className="material-symbols-outlined text-xs">chevron_right</span>
+          <span className="text-surface">{category?.name || 'Categoría'}</span>
+        </nav>
+
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-32">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-surface/60 animate-pulse font-medium">Cargando categoría...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-32 max-w-lg mx-auto">
+            <div className="inline-block p-4 rounded-full bg-red-500/10 text-red-500 mb-6">
+              <span className="material-symbols-outlined text-4xl">error</span>
             </div>
-          ) : error ? (
-            <div className="text-center py-32 max-w-lg mx-auto">
-              <div className="inline-block p-4 rounded-full bg-red-500/10 text-red-400 mb-6">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h1 className="text-3xl font-bold mb-4">Error</h1>
-              <p className="text-gray-400 mb-8">{error}</p>
-              <Link href="/" className="px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors">
-                Return Home
-              </Link>
-            </div>
-          ) : !category ? (
-            <div className="text-center py-32 max-w-lg mx-auto">
-              <h1 className="text-3xl font-bold mb-4">Category Not Found</h1>
-              <p className="text-gray-400 mb-8">The category you are looking for does not exist.</p>
-              <Link href="/" className="px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors">
-                Return Home
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="mb-12 text-center relative z-10">
-                <div className="inline-block relative">
-                  <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-100 to-purple-400 mb-4 tracking-tight" style={{ fontFamily: 'var(--font-family-display)' }}>
+            <h1 className="text-3xl font-black mb-4 tracking-tight">Error</h1>
+            <p className="text-surface/60 mb-8 font-medium">{String(error)}</p>
+            <Link href="/" className="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors inline-block">
+              Volver al Inicio
+            </Link>
+          </div>
+        ) : !category ? (
+          <div className="text-center py-32 max-w-lg mx-auto">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight text-surface mb-6 uppercase">Categoría No Encontrada</h1>
+            <p className="text-lg text-surface/70 leading-relaxed font-medium mb-8">La categoría que buscas no existe o ha sido movida.</p>
+            <Link href="/productos" className="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all inline-block hover:-translate-y-1">
+              Ver Todos los Productos
+            </Link>
+          </div>
+        ) : (
+          <>
+            <header className="mb-16">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <div className="max-w-2xl">
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-surface mb-6 uppercase">
                     {category.name}
                   </h1>
-                  <div className="absolute -bottom-2 left-0 w-full h-20 bg-purple-500/20 blur-3xl rounded-full -z-10"></div>
-                </div>
-                {category.description && (
-                  <p className="text-gray-400 max-w-2xl mx-auto text-lg mt-4">
-                    {category.description}
-                  </p>
-                )}
-              </div>
-
-              {filteredProducts.length === 0 ? (
-                <div className="max-w-2xl mx-auto">
-                  <div className="text-center py-20 bg-[#1a1a1a] border border-white/5 rounded-3xl p-10">
-                    <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg
-                        className="w-10 h-10 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                        />
-                      </svg>
-                    </div>
-                    <h2 className="text-2xl font-bold text-white mb-2">No Products Found</h2>
-                    <p className="text-gray-400">
-                      This category currently has no products available.
+                  {category.description && (
+                    <p className="text-lg text-surface/70 leading-relaxed font-medium">
+                      {category.description}
                     </p>
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
-                    {filteredProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
+                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                  <span className="text-surface/40">Total Items</span>
+                  <span className="bg-white px-3 py-1 rounded-full shadow-sm">
+                    {filteredProducts.length} Productos
+                  </span>
                 </div>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            </header>
+
+            <div className="flex flex-wrap items-center justify-end gap-6 py-6 border-y border-surface/10 mb-12">
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-surface/40">Ordenar Por</span>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="bg-transparent border-none text-xs font-bold uppercase tracking-widest focus:ring-0 cursor-pointer p-0 pr-8"
+                >
+                  <option value="newest">Más Recientes</option>
+                  <option value="price-asc">Precio: Menor a Mayor</option>
+                  <option value="price-desc">Precio: Mayor a Menor</option>
+                </select>
+              </div>
+            </div>
+
+            {filteredProducts.length === 0 ? (
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center py-20 bg-white border border-surface/5 rounded-3xl p-10 shadow-sm">
+                  <div className="w-24 h-24 bg-surface/5 rounded-full flex items-center justify-center mx-auto mb-6 text-surface/40">
+                    <span className="material-symbols-outlined text-4xl">inventory_2</span>
+                  </div>
+                  <h2 className="text-2xl font-black text-surface tracking-tight mb-2">No se encontraron productos</h2>
+                  <p className="text-surface/60 font-medium">
+                    Esta categoría no tiene productos disponibles actualmente.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       <Footer />

@@ -1,0 +1,224 @@
+<html class="light" lang="en"><head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Collections | Mebsy Elevated Minimalism</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#982598",
+                            "accent": "#E491C9",
+                            "surface": "#15173D",
+                            "background-light": "#F1E9E9",
+                            "background-dark": "#1f131f",
+                        },
+                        fontFamily: {
+                            "display": ["Manrope", "sans-serif"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "0.5rem",
+                            "lg": "0.75rem",
+                            "xl": "1.5rem",
+                            "full": "9999px"
+                        },
+                    },
+                },
+            }
+        </script>
+    <style type="text/tailwindcss">
+            body {
+                font-family: 'Manrope', sans-serif;
+                background-color: #F1E9E9;
+                color: #15173D;
+            }
+            .glass-nav {
+                background: rgba(241, 233, 233, 0.8);
+                backdrop-filter: blur(12px);
+            }
+            .collection-card:hover .collection-image {
+                transform: scale(1.03);
+            }
+            .collection-card:hover .explore-link {
+                letter-spacing: 0.15em;
+            }
+        </style>
+    </head>
+    <body class="bg-background-light text-surface selection:bg-primary/20">
+    <nav class="sticky top-0 z-50 glass-nav border-b border-surface/5">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+    <div class="bg-primary p-1.5 rounded-lg text-white">
+    <span class="material-symbols-outlined text-2xl">diamond</span>
+    </div>
+    <span class="text-2xl font-extrabold tracking-tighter text-surface uppercase">Mebsy</span>
+    </div>
+    <div class="hidden md:flex items-center gap-10">
+    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Shop</a>
+    <a class="text-sm font-semibold text-primary transition-colors border-b-2 border-primary" href="#">Collections</a>
+    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Journal</a>
+    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">About</a>
+    </div>
+    <div class="flex items-center gap-4">
+    <button class="p-2 hover:bg-white/50 rounded-full transition-all">
+    <span class="material-symbols-outlined text-surface">search</span>
+    </button>
+    <button class="p-2 hover:bg-white/50 rounded-full transition-all relative">
+    <span class="material-symbols-outlined text-surface">shopping_bag</span>
+    <span class="absolute top-1 right-1 bg-primary text-[10px] text-white w-4 h-4 flex items-center justify-center rounded-full">2</span>
+    </button>
+    <div class="h-6 w-[1px] bg-surface/10 mx-2"></div>
+    <button class="flex items-center gap-2 bg-surface text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-surface/90 transition-all">
+    <span class="material-symbols-outlined text-sm">person</span>
+                    Login
+                </button>
+    </div>
+    </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-6 py-16 md:py-24">
+    <header class="mb-16 md:mb-24 text-center max-w-3xl mx-auto">
+    <span class="text-xs font-bold uppercase tracking-[0.3em] text-primary/60 mb-4 block">Curation</span>
+    <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tighter text-surface mb-6">
+                Explore <span class="italic font-light">Collections</span>
+    </h1>
+    <p class="text-lg md:text-xl text-surface/60 leading-relaxed">
+                Discover our meticulously crafted seasonal stories. From everyday essentials to high-fashion editorial pieces, find the silhouette that speaks to your ethos.
+            </p>
+    </header>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10">
+    <div class="md:col-span-8 group relative overflow-hidden collection-card rounded-3xl bg-white">
+    <a class="block h-full" href="#">
+    <div class="aspect-[16/10] md:aspect-auto md:h-[650px] overflow-hidden">
+    <img alt="Women's Collection - High fashion editorial" class="w-full h-full object-cover transition-transform duration-1000 ease-out collection-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw78qG7FFw9BYw30pHtTqHLiIIu1syYf6n4uxR8IF8RdrNvKQ_lsIJyNz2dU51PDecfRJAeubJ2TawjYdA-yVIfvHx6bjg3v6RdEwZoDKqzBUkxXsLCVJNTCyW2ken-0_9IkVmiYUp_qrrbtkdDEASIx3f6zPqKiGpOYM7lSSLUSMuXsV6FcNi3TO1H-vLMvvJe4W0mOGS_EDFBUM5K0ogDMURxtA-LGaeB_2jmFMBSA3vHNhq8x9ry8jELgfBEvx7wIWageE0wC4"/>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/20 to-transparent flex flex-col justify-end p-8 md:p-12">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">The Women's Edit</h2>
+    <p class="text-white/80 max-w-md mb-6 font-medium">Fluid silhouettes meets sustainable luxury. A modern interpretation of femininity.</p>
+    <div class="inline-flex items-center gap-3 text-white font-bold tracking-widest uppercase text-xs explore-link transition-all duration-300">
+                            Explore Collection
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </div>
+    </div>
+    </a>
+    </div>
+    <div class="md:col-span-4 group relative overflow-hidden collection-card rounded-3xl bg-white">
+    <a class="block h-full" href="#">
+    <div class="aspect-[4/5] md:h-[650px] overflow-hidden">
+    <img alt="The Essentials Collection" class="w-full h-full object-cover transition-transform duration-1000 ease-out collection-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZmm2t6UQDicxArVda4tNwrEvXy8kaIPja8Dr4LkuO_C7svtU23UOdTHKCuXKBlEADHbZ1Lt-vN1W3uWtSUF05IZguqxXVmL6me0zmlNIqMBpK9q-0LNw16mFJvRXozC_t_aC2CoDpiLXqGqX6c1TFwg0U7GqreyTSoo8h5sTbjwsJas1ocU_w-7W_vg2rQCYE8qaHg2NBzi41ySykBjCs-SipciKB3nzD7nxRD_AiS9XgU4LbhJscQ4Kj0-QP_EHhWdg2e2TzolI"/>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/20 to-transparent flex flex-col justify-end p-8">
+    <h2 class="text-3xl font-extrabold text-white mb-3 tracking-tight">Essentials</h2>
+    <p class="text-white/80 mb-6 font-medium">Timeless staples designed for the conscious everyday.</p>
+    <div class="inline-flex items-center gap-3 text-white font-bold tracking-widest uppercase text-xs explore-link transition-all duration-300">
+                            Explore Collection
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </div>
+    </div>
+    </a>
+    </div>
+    <div class="md:col-span-6 group relative overflow-hidden collection-card rounded-3xl bg-white">
+    <a class="block h-full" href="#">
+    <div class="aspect-[4/3] overflow-hidden">
+    <img alt="Men's Collection" class="w-full h-full object-cover transition-transform duration-1000 ease-out collection-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZmm2t6UQDicxArVda4tNwrEvXy8kaIPja8Dr4LkuO_C7svtU23UOdTHKCuXKBlEADHbZ1Lt-vN1W3uWtSUF05IZguqxXVmL6me0zmlNIqMBpK9q-0LNw16mFJvRXozC_t_aC2CoDpiLXqGqX6c1TFwg0U7GqreyTSoo8h5sTbjwsJas1ocU_w-7W_vg2rQCYE8qaHg2NBzi41ySykBjCs-SipciKB3nzD7nxRD_AiS9XgU4LbhJscQ4Kj0-QP_EHhWdg2e2TzolI"/>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/20 to-transparent flex flex-col justify-end p-8 md:p-10">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">The Modern Man</h2>
+    <p class="text-white/80 max-w-sm mb-6 font-medium">Refined utility and structural precision in organic textiles.</p>
+    <div class="inline-flex items-center gap-3 text-white font-bold tracking-widest uppercase text-xs explore-link transition-all duration-300">
+                            Explore Collection
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </div>
+    </div>
+    </a>
+    </div>
+    <div class="md:col-span-6 group relative overflow-hidden collection-card rounded-3xl bg-white">
+    <a class="block h-full" href="#">
+    <div class="aspect-[4/3] overflow-hidden">
+    <img alt="Accessories Collection" class="w-full h-full object-cover transition-transform duration-1000 ease-out collection-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbgBLQfD-jmFzrV9xMe5JzVDVfX_SouCYQ00T5WZKgbLMx2tNGatlP-ESn88UrU-av4r2qw4ai4pa2EQlh4LpmTKHIMbqcPzOAZ5KOz-5nflyISAH_ljTBCQMnxzGZFONxGNPelooh0GR2hqpROVprAqeZRuokcgCs_KMO-oKtPM0bOG5ZBinMd00vScZTv9jNsiUzHX-hjMNAXMDMp2XN13RDgIH3oANFKZsE91yIq888xIPuCGmQxm4IjNhgZg4AbzN6ZD67sQ"/>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-surface/80 via-surface/20 to-transparent flex flex-col justify-end p-8 md:p-10">
+    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">Leather &amp; Objects</h2>
+    <p class="text-white/80 max-w-sm mb-6 font-medium">Artisanal accessories that complete the minimalist silhouette.</p>
+    <div class="inline-flex items-center gap-3 text-white font-bold tracking-widest uppercase text-xs explore-link transition-all duration-300">
+                            Explore Collection
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </div>
+    </div>
+    </a>
+    </div>
+    </div>
+    <section class="mt-24 md:mt-32 bg-white rounded-[3rem] p-12 md:p-20 text-center shadow-sm">
+    <h3 class="text-3xl font-black mb-6">Never miss a capsule.</h3>
+    <p class="text-surface/60 max-w-lg mx-auto mb-10 text-lg">Subscribe to receive early access to seasonal lookbooks and limited release collections.</p>
+    <form class="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
+    <input class="flex-1 bg-background-light border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary text-surface font-medium" placeholder="Email Address" type="email"/>
+    <button class="bg-surface text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary transition-all duration-300">Subscribe</button>
+    </form>
+    </section>
+    </main>
+    <footer class="bg-surface text-white pt-20 pb-10 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+    <div class="space-y-6">
+    <div class="flex items-center gap-2">
+    <div class="bg-primary p-1.5 rounded-lg text-white">
+    <span class="material-symbols-outlined text-2xl">diamond</span>
+    </div>
+    <span class="text-2xl font-extrabold tracking-tighter uppercase">Mebsy</span>
+    </div>
+    <p class="text-white/50 leading-relaxed">
+                        Elevating daily living through exceptional craftsmanship and thoughtful minimalist design.
+                    </p>
+    <div class="flex gap-4">
+    <a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors" href="#">
+    <span class="material-symbols-outlined text-sm">alternate_email</span>
+    </a>
+    <a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors" href="#">
+    <span class="material-symbols-outlined text-sm">share</span>
+    </a>
+    </div>
+    </div>
+    <div>
+    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Navigation</h5>
+    <ul class="space-y-4 text-white/60">
+    <li><a class="hover:text-white transition-colors" href="#">Shop All</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">New Arrivals</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Sustainability</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Stores</a></li>
+    </ul>
+    </div>
+    <div>
+    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Support</h5>
+    <ul class="space-y-4 text-white/60">
+    <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Returns &amp; Exchanges</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Shipping Information</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">FAQ</a></li>
+    </ul>
+    </div>
+    <div>
+    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Brand</h5>
+    <ul class="space-y-4 text-white/60">
+    <li><a class="hover:text-white transition-colors" href="#">Our Story</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Materials</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Ethical Production</a></li>
+    <li><a class="hover:text-white transition-colors" href="#">Journal</a></li>
+    </ul>
+    </div>
+    </div>
+    <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-xs font-medium">
+    <p>© 2024 Mebsy Premium Essentials. All rights reserved.</p>
+    <div class="flex gap-8">
+    <a class="hover:text-white" href="#">Privacy Policy</a>
+    <a class="hover:text-white" href="#">Terms of Service</a>
+    <a class="hover:text-white" href="#">Accessibility</a>
+    </div>
+    </div>
+    </div>
+    </footer>
+    
+    </body></html>

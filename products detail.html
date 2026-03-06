@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#15173D",
+                        "secondary": "#982598",
+                        "accent": "#E491C9",
+                        "background-light": "#F1E9E9",
+                        "background-dark": "#1f131f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .cart-dropdown-shadow {
+                box-shadow: 0 10px 40px -10px rgba(21, 23, 61, 0.15);
+            }
+        }
+    </style>
+    <title>Mebsy - Organic Silk Crewneck</title>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-[#15173D] dark:text-slate-100 antialiased">
+    <div class="relative flex min-h-screen w-full flex-col">
+        <header
+            class="sticky top-0 z-50 w-full border-b border-[#15173D]/10 bg-background-light/80 backdrop-blur-md dark:bg-background-dark/80 px-6 lg:px-20 py-4">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-2 group cursor-pointer">
+                    <div class="bg-secondary p-1.5 rounded-lg text-white">
+                        <span class="material-symbols-outlined text-xl">layers</span>
+                    </div>
+                    <h2 class="text-[#15173D] dark:text-white text-2xl font-extrabold tracking-tight">Mebsy</h2>
+                </div>
+                <nav
+                    class="hidden md:flex items-center gap-8 text-sm font-semibold text-[#15173D]/70 dark:text-slate-300">
+                    <a class="hover:text-secondary transition-colors" href="#">Shop</a>
+                    <a class="hover:text-secondary transition-colors" href="#">Sustainability</a>
+                    <a class="hover:text-secondary transition-colors" href="#">Our Story</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <div class="relative group">
+                        <button class="p-2 hover:bg-[#15173D]/5 rounded-full transition-colors relative">
+                            <span class="material-symbols-outlined text-[#15173D] dark:text-white">shopping_bag</span>
+                            <span
+                                class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] text-white">2</span>
+                        </button>
+                        <div
+                            class="absolute right-0 top-full pt-4 w-80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60]">
+                            <div
+                                class="bg-white rounded-xl cart-dropdown-shadow border border-[#15173D]/5 overflow-hidden">
+                                <div class="p-4 border-b border-[#15173D]/5">
+                                    <h3 class="text-sm font-bold text-[#15173D] uppercase tracking-wider">Your Cart (2)
+                                    </h3>
+                                </div>
+                                <div class="max-h-80 overflow-y-auto">
+                                    <div class="p-4 flex gap-4 hover:bg-slate-50 transition-colors">
+                                        <div class="w-16 h-20 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                            <img alt="Product thumbnail" class="w-full h-full object-cover"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAJg8bBH_NXatK2VVHL-81xgkMczJkxMaWgfvzLAYAvKqYRFos7O0qGaGiLIHO2r799ovjqnAZ4S9-Wj8DlqbE5Mc4W44xbttRE_1HuYbbbwodw67iQg6v3E9R2xLdBiLL4wwEbWofrimTxIXmGukjzAp76iGPvhqLIte7UqPBWapAGBia_DeEYpHalewnBo6_4BVtsTFmg2urEEhESY5BdV9IOdOQAg0drNx-5PxNBk2ZI5QD9RFeD9La13Ng2Q42zftVfiyO62E" />
+                                        </div>
+                                        <div class="flex flex-col justify-between py-1">
+                                            <div>
+                                                <p class="text-sm font-bold text-[#15173D] leading-tight">Organic Silk
+                                                    Crewneck</p>
+                                                <p class="text-[10px] text-[#15173D]/60 mt-0.5">Ivory Mist / S</p>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <p class="text-xs font-bold text-secondary">$185.00</p>
+                                                <p class="text-[10px] text-[#15173D]/40">Qty: 1</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 flex gap-4 hover:bg-slate-50 transition-colors">
+                                        <div class="w-16 h-20 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                                            <img alt="Product thumbnail" class="w-full h-full object-cover"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCTpX5HikVBcuaCR3xnkVkvfJQULQYVxFkAr9tGUPJRnpzWjgK4iyP2msTqk-xVnoq1suSx60jRgxBwM5OKPIqYK_gTIHsvovMekj5LaFzy-3_IMm6IJgnAiSu35ccy_XkQbzNDUJK1j-NNJyV5PO8kn3ko9_HZEWtbxry9AB73whllFGTmdd3xbhhKrLDSFO1bl2qtPZ21bZGxSBDQAXOrp9X65LvprnOPl1h1LQ4VM3ui2d-xr4Xrcv9sYVPfcdgYnV2hkusOrU" />
+                                        </div>
+                                        <div class="flex flex-col justify-between py-1">
+                                            <div>
+                                                <p class="text-sm font-bold text-[#15173D] leading-tight">Silk Pleated
+                                                    Trousers</p>
+                                                <p class="text-[10px] text-[#15173D]/60 mt-0.5">Charcoal / M</p>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <p class="text-xs font-bold text-secondary">$210.00</p>
+                                                <p class="text-[10px] text-[#15173D]/40">Qty: 1</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-slate-50">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-sm font-medium text-[#15173D]/70">Subtotal</span>
+                                        <span class="text-lg font-bold text-[#15173D]">$395.00</span>
+                                    </div>
+                                    <button
+                                        class="w-full bg-[#15173D] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#15173D]/90 transition-all flex items-center justify-center gap-2">
+                                        Checkout
+                                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </button>
+                                    <button
+                                        class="w-full mt-2 text-center text-[11px] font-bold text-secondary uppercase tracking-widest hover:underline">
+                                        View full cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="p-2 hover:bg-[#15173D]/5 rounded-full transition-colors">
+                        <span class="material-symbols-outlined text-[#15173D] dark:text-white">search</span>
+                    </button>
+                    <div class="h-10 w-10 rounded-full border-2 border-accent/30 overflow-hidden shadow-sm">
+                        <img alt="User profile avatar portrait" class="h-full w-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOTDBg1_sMnMxE24bdprEAQqaGAAww-FUJguTNYqhLjNtKG-Ba9Dk_8fV3sf2KVO7-XeWYtT1P0SHiGJjogprsy40vES8Ild6P8Ok2bAkT1BJ_heje7Btmgh6go2khOpqXZXn2RzFzqGarFxmYxE-C6gTqDfQFOSWeQCG4r24mtFGGR2g6-LSBMr3dRnkap_auLEcolFTR6p0eD0eP0WRGESqBKbq_BjeDSSYhEEMM3sAMe_B2IW8bNPuGOXQg-_9JZGG63lD3J_8" />
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-grow max-w-7xl mx-auto w-full px-4 lg:px-20 py-8 lg:py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-7 flex flex-col gap-4">
+                    <div class="aspect-[4/5] w-full overflow-hidden rounded-xl bg-white shadow-lg">
+                        <img alt="High-end fashion photography of organic silk crewneck sweater"
+                            class="h-full w-full object-cover transition-transform hover:scale-105 duration-700"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAJg8bBH_NXatK2VVHL-81xgkMczJkxMaWgfvzLAYAvKqYRFos7O0qGaGiLIHO2r799ovjqnAZ4S9-Wj8DlqbE5Mc4W44xbttRE_1HuYbbbwodw67iQg6v3E9R2xLdBiLL4wwEbWofrimTxIXmGukjzAp76iGPvhqLIte7UqPBWapAGBia_DeEYpHalewnBo6_4BVtsTFmg2urEEhESY5BdV9IOdOQAg0drNx-5PxNBk2ZI5QD9RFeD9La13Ng2Q42zftVfiyO62E" />
+                    </div>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div
+                            class="aspect-square rounded-lg border-2 border-secondary overflow-hidden cursor-pointer shadow-sm">
+                            <img alt="Close up detail of silk fabric texture" class="h-full w-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA86iWpS8EkclqSEUlG4x8URd29gL1-jS3avoF9RJ3UaKHpifS1krBFd2yzgVgO7WPBZgE_dHmh2dCjMSeAL8SClRrkUGUmCbB-5VE2wwy8g6v12z4SC2X-xp1lPYrmJxB_bZGm2wxNkJbQBP3ajAC7SxvUMGbkNN0LTya6XQQXuf9Jm-cpzGb3csI7fHKCx8Godiwmivnx8RhS92Y_zbYFtRG5F_r4sJa0VbUb281Us3gkpcdD4Z1Z_VcpLF_DAVETAc2tL7XbZxc" />
+                        </div>
+                        <div
+                            class="aspect-square rounded-lg border border-[#15173D]/10 overflow-hidden cursor-pointer hover:border-accent transition-colors">
+                            <img alt="Model wearing silk sweater in outdoor setting" class="h-full w-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpNDOHEqEybjVb0RlS7hVcmbJ7zfrvy4ZfHdVi_N8onN9w4S_SyDn16wVgBxek6fzCAI34bTl-tU2LHk5UGgx2-YriHY3-EhO-p6k8x5KORNrEbAalIE31_jZBEmbKqEclo12EB7OGSIGYRPZOGV_YEmj9vPPzj5PmIkhgwVNKWnLk-_td4vf4zOB2A4S1-QavxoaIFsFgfitj5GozqrdiDELK-he7AtT8amv8I4XX64G9jIlYMqLpiUHligdIsD6k0f-G__fxXds" />
+                        </div>
+                        <div
+                            class="aspect-square rounded-lg border border-[#15173D]/10 overflow-hidden cursor-pointer hover:border-accent transition-colors">
+                            <img alt="Side profile view of premium crewneck sweater" class="h-full w-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQnPnszxoDOi92DwPNbpa4mcEq5N6EhDnyE4x6Br8CT824NLwxQnxSHNNW29yeFADlFCIbTLiS2Ol_J9Pky6gj3qrhB1hthj9ofZBVTdu2KhyAbP5DDtSh_bz4oK_Aq5kTqju76rNweaPdkdsSYOlmi_32Ibnl0j8TGa-wfcgCnWEVuXPgRk00PFpPyQgw3nzCpbodJ2U3Dt0guejFnqsYbJpyApgZSyRV1fX-IYaIoc84obGhXZXnUtx6RQxbLS_Z6kiyQttRGQ8" />
+                        </div>
+                        <div
+                            class="aspect-square rounded-lg border border-[#15173D]/10 overflow-hidden cursor-pointer hover:border-accent transition-colors">
+                            <img alt="Minimalist product shot of folded silk sweater" class="h-full w-full object-cover"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkibFsKiK0aOnjxZKRsV0MI9id-9-i8QSBgY7Lgb4vqYsrYrgK_gr3-WpXxya3kjFdTx2zHm_2cnzca_ITbyi5WRAbLErAOousZENlkK9xV3Nr7GE7FNP-36p3TQuiPkYu4kQVlLb0MGZTlUi_EzkxZVtH7r1trrdIdqD7WhiOgxo9g_yDXBMXwkxoZErAWZmbbGrtZQP75ruFjEYmhMsnXHijQ1Z0cgyvN6wVD46UyoeTvHvzaGd4uRvL891QwWhhCo5tFTpm-IY" />
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 flex flex-col gap-8">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="bg-accent/20 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Premium
+                                Collection</span>
+                            <div class="flex items-center text-amber-500">
+                                <span class="material-symbols-outlined text-sm">star</span>
+                                <span class="material-symbols-outlined text-sm">star</span>
+                                <span class="material-symbols-outlined text-sm">star</span>
+                                <span class="material-symbols-outlined text-sm">star</span>
+                                <span class="material-symbols-outlined text-sm">star</span>
+                                <span class="ml-1 text-[#15173D]/60 text-xs">(48 reviews)</span>
+                            </div>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-black text-[#15173D] dark:text-white leading-tight">Organic
+                            Silk Crewneck</h1>
+                        <p class="text-3xl font-bold text-secondary">$185.00</p>
+                        <p class="text-[#15173D]/70 dark:text-slate-300 leading-relaxed max-w-md">
+                            Experience the pinnacle of sustainable luxury. Handcrafted from 100% organic mulberry silk,
+                            this crewneck offers an unmatched softness and natural thermal regulation for year-round
+                            elegance.
+                        </p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-3">
+                            <label class="text-sm font-bold text-[#15173D] uppercase tracking-wider">Color: Ivory
+                                Mist</label>
+                            <div class="flex gap-3">
+                                <button
+                                    class="w-10 h-10 rounded-full border-2 border-secondary bg-[#F8F8F8] p-1 shadow-inner"></button>
+                                <button
+                                    class="w-10 h-10 rounded-full border border-[#15173D]/10 bg-[#2D2D2D] p-1"></button>
+                                <button
+                                    class="w-10 h-10 rounded-full border border-[#15173D]/10 bg-[#4A5D4E] p-1"></button>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-[#15173D] uppercase tracking-wider">Select
+                                    Size</label>
+                                <button class="text-xs text-secondary underline font-semibold">Size Guide</button>
+                            </div>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button
+                                    class="py-3 border border-[#15173D]/20 rounded hover:border-secondary transition-colors text-sm font-medium">XS</button>
+                                <button
+                                    class="py-3 border-2 border-secondary bg-secondary/5 rounded text-sm font-bold">S</button>
+                                <button
+                                    class="py-3 border border-[#15173D]/20 rounded hover:border-secondary transition-colors text-sm font-medium">M</button>
+                                <button
+                                    class="py-3 border border-[#15173D]/20 rounded hover:border-secondary transition-colors text-sm font-medium">L</button>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-end">
+                            <div class="flex flex-col gap-3">
+                                <label
+                                    class="text-sm font-bold text-[#15173D] uppercase tracking-wider">Quantity</label>
+                                <div class="flex items-center border border-[#15173D]/20 rounded-lg h-14 px-2">
+                                    <button class="p-2 hover:text-secondary transition-colors"><span
+                                            class="material-symbols-outlined">remove</span></button>
+                                    <span class="w-10 text-center font-bold">1</span>
+                                    <button class="p-2 hover:text-secondary transition-colors"><span
+                                            class="material-symbols-outlined">add</span></button>
+                                </div>
+                            </div>
+                            <button
+                                class="flex-grow bg-secondary hover:bg-secondary/90 text-white font-bold h-14 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-secondary/20 transition-all transform hover:scale-[1.02]">
+                                <span class="material-symbols-outlined">shopping_cart</span>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#15173D]/10 pt-4 space-y-2">
+                        <div
+                            class="py-4 border-b border-[#15173D]/5 flex justify-between items-center cursor-pointer group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-secondary">local_shipping</span>
+                                <span class="font-bold text-[#15173D]">Shipping &amp; Returns</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-[#15173D]/40 group-hover:text-secondary">expand_more</span>
+                        </div>
+                        <div
+                            class="py-4 border-b border-[#15173D]/5 flex justify-between items-center cursor-pointer group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-secondary">verified_user</span>
+                                <span class="font-bold text-[#15173D]">2-Year Warranty</span>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-[#15173D]/40 group-hover:text-secondary">expand_more</span>
+                        </div>
+                        <div
+                            class="py-4 border-b border-[#15173D]/5 flex justify-between items-center cursor-pointer group">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-secondary">inventory_2</span>
+                                <span class="font-bold text-[#15173D]">In Stock</span>
+                            </div>
+                            <span class="text-sm font-bold text-green-600">Ready to Ship</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="mt-24">
+                <div class="flex justify-between items-end mb-8 border-b border-accent/20 pb-4">
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-[#15173D]">Complete the Look</h3>
+                        <p class="text-[#15173D]/60 mt-1">Recommended for you based on this item</p>
+                    </div>
+                    <button class="flex items-center gap-1 text-secondary font-bold hover:gap-2 transition-all">
+                        View All <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="group cursor-pointer">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded-xl mb-4 bg-white">
+                            <img alt="Silk pleated trousers in charcoal"
+                                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCTpX5HikVBcuaCR3xnkVkvfJQULQYVxFkAr9tGUPJRnpzWjgK4iyP2msTqk-xVnoq1suSx60jRgxBwM5OKPIqYK_gTIHsvovMekj5LaFzy-3_IMm6IJgnAiSu35ccy_XkQbzNDUJK1j-NNJyV5PO8kn3ko9_HZEWtbxry9AB73whllFGTmdd3xbhhKrLDSFO1bl2qtPZ21bZGxSBDQAXOrp9X65LvprnOPl1h1LQ4VM3ui2d-xr4Xrcv9sYVPfcdgYnV2hkusOrU" />
+                            <button
+                                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[#15173D]">add_shopping_cart</span>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-[#15173D]">Silk Pleated Trousers</h4>
+                        <p class="text-[#15173D]/60 text-sm">$210.00</p>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded-xl mb-4 bg-white">
+                            <img alt="Lightweight wool scarf accessory"
+                                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAir9XAG-akOj1oDo6gPJ3X79wf3bIxU756vDMIATVqUFnS2noo6DUxi0wxWPiy4GWgmaMmzupX0FtnhaySaZz28s0DjPOZFZVx2xp1fXb8hAUnz-Pg6Xp6p6WfnlcE38J5j09_2I4CTE65Rf0Iy3p7CJwCSALBzHrMaqv8R6yD4xZjN5Ug8RoidKR085_Ao2Y2dgyYp-29Yv6Z-6grb_Cgt3HyOr1h_YAHu26wr0yzLDFEij-4sHLczQpSCssHgGzExHHa8FCiI9Q" />
+                            <button
+                                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[#15173D]">add_shopping_cart</span>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-[#15173D]">Lightweight Wool Scarf</h4>
+                        <p class="text-[#15173D]/60 text-sm">$85.00</p>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded-xl mb-4 bg-white">
+                            <img alt="Luxury leather ankle boots"
+                                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOBiiEqH7QydSEwsQJMUt-hVq0JL79GCRKoEqGrcHlplGCAX316V8IzlEGddg87IvgrRh53jzl4pKIvUhmAz6qVaTMwNIWik9sqYp6GB7qB72AqUHRrY56Jk5dlhofiwX1Gv0nM0Mzc-xOth4D89x6dl74Cf5YW53kr_Hp0J6wkt5SFmOgfNh8BI0JwTA3xDzz2a4jgV_4MIP011BfoSAI3KBw3FLZuYQ6R0W1PY2EA-z46eKIRRtmAW4CniR7LSWN5OfppjHt6KA" />
+                            <button
+                                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[#15173D]">add_shopping_cart</span>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-[#15173D]">Leather Ankle Boots</h4>
+                        <p class="text-[#15173D]/60 text-sm">$320.00</p>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded-xl mb-4 bg-white">
+                            <img alt="Organic silk lounge pants"
+                                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9M9xyJicc3CHCrwzMBubY2zSKXoKjAdiwSUZ0OgMs6ZlKrdOd5Gm1yYZhafLQzS3k0XU1QG-qtpOCh2UfCX2wi_ZMC9hcM5UVPRgBb-vmxagn9GwDHDLykOQLha_10PobXBbV7stzL9cKM4UJBFF3GWkwDmdmqsTJ3y4Uirw0oWEjSep8vIMMVGvFSfL9dtCAPEhXDisAqpVUu-DG9YqWjnOUmOLWIL01nq96V1mpeGMjaGjj4bj9xH4SoumOgwYzaFtg2D1uoac" />
+                            <button
+                                class="absolute bottom-4 right-4 bg-white/90 backdrop-blur p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[#15173D]">add_shopping_cart</span>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-[#15173D]">Organic Silk Lounge Pants</h4>
+                        <p class="text-[#15173D]/60 text-sm">$175.00</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="bg-[#15173D] text-white py-16 px-6 lg:px-20 mt-20">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-secondary p-1 rounded-lg">
+                            <span class="material-symbols-outlined text-lg">layers</span>
+                        </div>
+                        <h2 class="text-xl font-bold tracking-tight">Mebsy</h2>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Redefining modern luxury through sustainable materials and ethical craftsmanship.
+                    </p>
+                    <div class="flex gap-4">
+                        <span class="material-symbols-outlined cursor-pointer hover:text-accent">public</span>
+                        <span class="material-symbols-outlined cursor-pointer hover:text-accent">share</span>
+                        <span class="material-symbols-outlined cursor-pointer hover:text-accent">mail</span>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-[0.2em] text-accent">Shop</h5>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li><a class="hover:text-white transition-colors" href="#">New Arrivals</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Best Sellers</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Collections</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Sale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-[0.2em] text-accent">Support</h5>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li><a class="hover:text-white transition-colors" href="#">Shipping Info</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Returns</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Size Guide</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-[0.2em] text-accent">Newsletter</h5>
+                    <p class="text-sm text-slate-400 mb-4">Join for exclusive updates and 10% off your first order.</p>
+                    <div class="flex">
+                        <input
+                            class="bg-white/10 border-none rounded-l-lg px-4 py-2 w-full focus:ring-1 focus:ring-accent outline-none text-white text-sm"
+                            placeholder="Email address" type="email" />
+                        <button
+                            class="bg-secondary px-4 py-2 rounded-r-lg font-bold hover:bg-secondary/80 transition-colors">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="max-w-7xl mx-auto border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+                <p>© 2024 Mebsy Premium Apparel. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a class="hover:text-white" href="#">Privacy Policy</a>
+                    <a class="hover:text-white" href="#">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>

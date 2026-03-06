@@ -1,0 +1,367 @@
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Women's Edit | Mebsy Elevated Minimalism</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#982598",
+                        "accent": "#E491C9",
+                        "surface": "#15173D",
+                        "background-light": "#F1E9E9",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #F1E9E9;
+            color: #15173D;
+        }
+        .glass-nav {
+            background: rgba(241, 233, 233, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .product-card .swatches {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .product-card:hover .swatches {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light text-surface selection:bg-primary/20">
+    <nav class="sticky top-0 z-50 glass-nav border-b border-surface/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="bg-primary p-1.5 rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">diamond</span>
+                </div>
+                <span class="text-2xl font-extrabold tracking-tighter text-surface uppercase">Mebsy</span>
+            </div>
+            <div class="hidden md:flex items-center gap-10">
+                <a class="text-sm font-semibold text-primary transition-colors border-b-2 border-primary"
+                    href="#">Shop</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Collections</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Journal</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">About</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="p-2 hover:bg-white/50 rounded-full transition-all">
+                    <span class="material-symbols-outlined text-surface">search</span>
+                </button>
+                <button class="p-2 hover:bg-white/50 rounded-full transition-all relative">
+                    <span class="material-symbols-outlined text-surface">shopping_bag</span>
+                    <span
+                        class="absolute top-1 right-1 bg-primary text-[10px] text-white w-4 h-4 flex items-center justify-center rounded-full">2</span>
+                </button>
+                <div class="h-6 w-[1px] bg-surface/10 mx-2"></div>
+                <button
+                    class="flex items-center gap-2 bg-surface text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-surface/90 transition-all">
+                    <span class="material-symbols-outlined text-sm">person</span>
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <nav class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-surface/40 mb-12">
+            <a class="hover:text-primary" href="#">Home</a>
+            <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+            <a class="hover:text-primary" href="#">Collections</a>
+            <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+            <span class="text-surface">Women's Edit</span>
+        </nav>
+        <header class="mb-16">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <div class="max-w-2xl">
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-surface mb-6 uppercase">
+                        Women's <span class="italic font-light lowercase text-primary/80">Edit</span>
+                    </h1>
+                    <p class="text-lg text-surface/70 leading-relaxed font-medium">
+                        A curation of fluid silhouettes and structured tailoring. Designed with sustainable silk,
+                        organic cotton, and recycled textiles for the modern, conscious wardrobe.
+                    </p>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                    <span class="text-surface/40">Total Items</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm">24 Products</span>
+                </div>
+            </div>
+        </header>
+        <div class="flex flex-wrap items-center justify-between gap-6 py-6 border-y border-surface/10 mb-12">
+            <div class="flex items-center gap-8">
+                <div class="group relative cursor-pointer">
+                    <button
+                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors">
+                        Size <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+                    </button>
+                </div>
+                <div class="group relative cursor-pointer">
+                    <button
+                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors">
+                        Color <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+                    </button>
+                </div>
+                <div class="group relative cursor-pointer">
+                    <button
+                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors">
+                        Material <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-surface/40">Sort By</span>
+                <select
+                    class="bg-transparent border-none text-xs font-bold uppercase tracking-widest focus:ring-0 cursor-pointer p-0 pr-8">
+                    <option>Newest Arrivals</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Popularity</option>
+                </select>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
+            <div class="product-card group cursor-pointer">
+                <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white mb-4">
+                    <img alt="Silk Blouse"
+                        class="product-image w-full h-full object-cover transition-transform duration-700 ease-out"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw78qG7FFw9BYw30pHtTqHLiIIu1syYf6n4uxR8IF8RdrNvKQ_lsIJyNz2dU51PDecfRJAeubJ2TawjYdA-yVIfvHx6bjg3v6RdEwZoDKqzBUkxXsLCVJNTCyW2ken-0_9IkVmiYUp_qrrbtkdDEASIx3f6zPqKiGpOYM7lSSLUSMuXsV6FcNi3TO1H-vLMvvJe4W0mOGS_EDFBUM5K0ogDMURxtA-LGaeB_2jmFMBSA3vHNhq8x9ry8jELgfBEvx7wIWageE0wC4" />
+                    <div class="swatches absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/40 to-transparent">
+                        <div class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#15173D] border border-white/20"></span>
+                                <span class="w-4 h-4 rounded-full bg-[#EAEAEA] border border-white/20"></span>
+                                <span class="w-4 h-4 rounded-full bg-[#982598] border border-white/20"></span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">XS</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">S</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">M</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">L</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-surface text-xl">favorite</span>
+                    </button>
+                </div>
+                <div class="flex justify-between items-start px-1">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-tight mb-1">Ethereal Silk Blouse</h3>
+                        <p class="text-xs text-surface/50 font-medium">Sustainable Silk</p>
+                    </div>
+                    <p class="text-sm font-bold">$245</p>
+                </div>
+            </div>
+            <div class="product-card group cursor-pointer">
+                <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white mb-4">
+                    <img alt="Linen Trousers"
+                        class="product-image w-full h-full object-cover transition-transform duration-700 ease-out"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZmm2t6UQDicxArVda4tNwrEvXy8kaIPja8Dr4LkuO_C7svtU23UOdTHKCuXKBlEADHbZ1Lt-vN1W3uWtSUF05IZguqxXVmL6me0zmlNIqMBpK9q-0LNw16mFJvRXozC_t_aC2CoDpiLXqGqX6c1TFwg0U7GqreyTSoo8h5sTbjwsJas1ocU_w-7W_vg2rQCYE8qaHg2NBzi41ySykBjCs-SipciKB3nzD7nxRD_AiS9XgU4LbhJscQ4Kj0-QP_EHhWdg2e2TzolI" />
+                    <div class="swatches absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/40 to-transparent">
+                        <div class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#C2B280] border border-white/20"></span>
+                                <span class="w-4 h-4 rounded-full bg-[#15173D] border border-white/20"></span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">24</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">26</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">28</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-surface text-xl">favorite</span>
+                    </button>
+                </div>
+                <div class="flex justify-between items-start px-1">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-tight mb-1">Architectural Trousers</h3>
+                        <p class="text-xs text-surface/50 font-medium">Organic Linen</p>
+                    </div>
+                    <p class="text-sm font-bold">$380</p>
+                </div>
+            </div>
+            <div class="product-card group cursor-pointer">
+                <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white mb-4">
+                    <img alt="Organic Cotton Tee"
+                        class="product-image w-full h-full object-cover transition-transform duration-700 ease-out"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZmm2t6UQDicxArVda4tNwrEvXy8kaIPja8Dr4LkuO_C7svtU23UOdTHKCuXKBlEADHbZ1Lt-vN1W3uWtSUF05IZguqxXVmL6me0zmlNIqMBpK9q-0LNw16mFJvRXozC_t_aC2CoDpiLXqGqX6c1TFwg0U7GqreyTSoo8h5sTbjwsJas1ocU_w-7W_vg2rQCYE8qaHg2NBzi41ySykBjCs-SipciKB3nzD7nxRD_AiS9XgU4LbhJscQ4Kj0-QP_EHhWdg2e2TzolI" />
+                    <div class="swatches absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/40 to-transparent">
+                        <div class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                                <span class="w-4 h-4 rounded-full bg-white border border-white/20"></span>
+                                <span class="w-4 h-4 rounded-full bg-black border border-white/20"></span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">S</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">M</span>
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">L</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-surface text-xl">favorite</span>
+                    </button>
+                </div>
+                <div class="flex justify-between items-start px-1">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-tight mb-1">Essential Base Layer</h3>
+                        <p class="text-xs text-surface/50 font-medium">Organic Cotton</p>
+                    </div>
+                    <p class="text-sm font-bold">$95</p>
+                </div>
+            </div>
+            <div class="product-card group cursor-pointer">
+                <div class="relative aspect-[3/4] overflow-hidden rounded-2xl bg-white mb-4">
+                    <img alt="Recycled Cashmere"
+                        class="product-image w-full h-full object-cover transition-transform duration-700 ease-out"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbgBLQfD-jmFzrV9xMe5JzVDVfX_SouCYQ00T5WZKgbLMx2tNGatlP-ESn88UrU-av4r2qw4ai4pa2EQlh4LpmTKHIMbqcPzOAZ5KOz-5nflyISAH_ljTBCQMnxzGZFONxGNPelooh0GR2hqpROVprAqeZRuokcgCs_KMO-oKtPM0bOG5ZBinMd00vScZTv9jNsiUzHX-hjMNAXMDMp2XN13RDgIH3oANFKZsE91yIq888xIPuCGmQxm4IjNhgZg4AbzN6ZD67sQ" />
+                    <div class="swatches absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/40 to-transparent">
+                        <div class="flex flex-col gap-3">
+                            <div class="flex gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#4A4A4A] border border-white/20"></span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <span
+                                    class="text-[9px] font-bold text-white bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">O/S</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        class="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-surface text-xl">favorite</span>
+                    </button>
+                </div>
+                <div class="flex justify-between items-start px-1">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-tight mb-1">Cashmere Scarf</h3>
+                        <p class="text-xs text-surface/50 font-medium">Recycled Cashmere</p>
+                    </div>
+                    <p class="text-sm font-bold">$185</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-24 flex items-center justify-center gap-4">
+            <button
+                class="w-12 h-12 rounded-full border border-surface/10 flex items-center justify-center hover:bg-surface hover:text-white transition-all">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <div class="flex items-center gap-2">
+                <button class="w-12 h-12 rounded-full bg-surface text-white font-bold text-sm">1</button>
+                <button
+                    class="w-12 h-12 rounded-full border border-surface/10 font-bold text-sm hover:border-surface transition-all">2</button>
+                <button
+                    class="w-12 h-12 rounded-full border border-surface/10 font-bold text-sm hover:border-surface transition-all">3</button>
+            </div>
+            <button
+                class="w-12 h-12 rounded-full border border-surface/10 flex items-center justify-center hover:bg-surface hover:text-white transition-all">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+    </main>
+    <footer class="bg-surface text-white pt-20 pb-10 mt-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-primary p-1.5 rounded-lg text-white">
+                            <span class="material-symbols-outlined text-2xl">diamond</span>
+                        </div>
+                        <span class="text-2xl font-extrabold tracking-tighter uppercase">Mebsy</span>
+                    </div>
+                    <p class="text-white/50 leading-relaxed">
+                        Elevating daily living through exceptional craftsmanship and thoughtful minimalist design.
+                    </p>
+                    <div class="flex gap-4">
+                        <a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-sm">alternate_email</span>
+                        </a>
+                        <a class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-sm">share</span>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Navigation</h5>
+                    <ul class="space-y-4 text-white/60 text-sm font-medium">
+                        <li><a class="hover:text-white transition-colors" href="#">Shop All</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">New Arrivals</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Sustainability</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Stores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Support</h5>
+                    <ul class="space-y-4 text-white/60 text-sm font-medium">
+                        <li><a class="hover:text-white transition-colors" href="#">Contact Us</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Returns &amp; Exchanges</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Shipping Information</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Brand</h5>
+                    <ul class="space-y-4 text-white/60 text-sm font-medium">
+                        <li><a class="hover:text-white transition-colors" href="#">Our Story</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Materials</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Ethical Production</a></li>
+                        <li><a class="hover:text-white transition-colors" href="#">Journal</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-[10px] font-bold uppercase tracking-widest">
+                <p>© 2024 Mebsy Premium Essentials. All rights reserved.</p>
+                <div class="flex gap-8">
+                    <a class="hover:text-white" href="#">Privacy Policy</a>
+                    <a class="hover:text-white" href="#">Terms of Service</a>
+                    <a class="hover:text-white" href="#">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
