@@ -1,4 +1,4 @@
-import { API_BASE_URL, defaultFetchOptions, getAuthHeaders } from '@/lib/http/client';
+import { fetchAPI } from '@/lib/http/client';
 
 function mapProductResponse(p) {
     return {
@@ -11,19 +11,8 @@ function mapProductResponse(p) {
 
 export const productAPI = {
     getAll: async () => {
-        const response = await fetch(`${API_BASE_URL}/products`, {
-            ...defaultFetchOptions,
-            method: 'GET',
-            headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al obtener productos' }));
-            throw new Error(error.message || 'Error al obtener productos');
-        }
-
-        const rawProducts = await response.json();
-        return rawProducts.map(mapProductResponse);
+        const raw = await fetchAPI('/products', { errorMessage: 'Error al obtener productos' });
+        return raw.map(mapProductResponse);
     },
 
     /**
@@ -37,30 +26,20 @@ export const productAPI = {
         }
         if (inStockOnly) params.set('inStockOnly', 'true');
         const query = params.toString();
-        const url = `${API_BASE_URL}/products${query ? `?${query}` : ''}`;
-        const response = await fetch(url, {
-            ...defaultFetchOptions,
-            method: 'GET',
-            headers: getAuthHeaders(),
+        const raw = await fetchAPI(`/products${query ? `?${query}` : ''}`, {
+            errorMessage: 'Error al obtener productos',
         });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al obtener productos' }));
-            throw new Error(error.message || 'Error al obtener productos');
-        }
-
-        const rawProducts = await response.json();
-        return rawProducts.map(mapProductResponse);
+        return raw.map(mapProductResponse);
     },
 
     getAttributes: async (productId) => {
-        const response = await fetch(`${API_BASE_URL}/products/${productId}/attributes`, {
-            ...defaultFetchOptions,
-            method: 'GET',
-            headers: getAuthHeaders(),
-        });
-        if (!response.ok) return null;
-        return await response.json();
+        try {
+            return await fetchAPI(`/products/${productId}/attributes`, {
+                errorMessage: 'Error al obtener atributos',
+            });
+        } catch {
+            return null;
+        }
     },
 
     getById: async (productId) => {

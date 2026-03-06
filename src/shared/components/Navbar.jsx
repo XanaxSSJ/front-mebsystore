@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cart.store';
 import { useSearchStore } from '@/store/search.store';
 import { useProfileQuery } from '@/features/user/hooks/useProfileQuery';
 import { useAuthStatusQuery } from '@/features/auth/hooks/useAuthStatusQuery';
+import { useClickOutside } from '@/shared/hooks/useClickOutside';
 import CartDropdown from '@/features/cart/components/CartDropdown';
 import ProfileDropdown from '@/features/user/components/ProfileDropdown';
 
@@ -29,17 +30,10 @@ function Navbar() {
         }
     };
 
+    useClickOutside(searchRef, () => setIsSearchOpen(false), isSearchOpen);
+
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setIsSearchOpen(false);
-            }
-        };
-        if (isSearchOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-            setTimeout(() => inputRef.current?.focus(), 100);
-        }
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        if (isSearchOpen) setTimeout(() => inputRef.current?.focus(), 100);
     }, [isSearchOpen]);
 
     const { data: authStatus } = useAuthStatusQuery();
@@ -111,7 +105,7 @@ function Navbar() {
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search..."
+                                    placeholder="Buscar..."
                                     className="w-full bg-transparent border-none text-surface focus:outline-none focus:ring-0 text-sm py-1"
                                 />
                             </form>
@@ -119,14 +113,17 @@ function Navbar() {
                     </div>
 
                     {/* Cart */}
-                    <button onClick={() => setIsCartOpen(!isCartOpen)} className="p-2 hover:bg-white/50 rounded-full transition-all relative flex items-center">
-                        <span className="material-symbols-outlined text-surface">shopping_bag</span>
-                        {totalItems > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-primary text-[10px] text-white w-4 h-4 flex items-center justify-center rounded-full">
-                                {totalItems}
-                            </span>
-                        )}
-                    </button>
+                    <div className="relative">
+                        <button onClick={() => setIsCartOpen(!isCartOpen)} className="p-2 hover:bg-white/50 rounded-full transition-all relative flex items-center">
+                            <span className="material-symbols-outlined text-surface">shopping_bag</span>
+                            {totalItems > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-primary text-[10px] text-white w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                                    {totalItems}
+                                </span>
+                            )}
+                        </button>
+                        <CartDropdown isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+                    </div>
 
                     <div className="h-6 w-[1px] bg-surface/10 mx-2 hidden md:block"></div>
 
@@ -134,22 +131,20 @@ function Navbar() {
                     {isCheckingAuth ? (
                         <div className="w-8 h-8 rounded-full bg-surface/10 animate-pulse hidden md:block"></div>
                     ) : isAuthenticated ? (
-                        <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="p-2 hover:bg-white/50 rounded-full transition-all border border-transparent flex items-center">
-                            <span className="material-symbols-outlined text-surface">person</span>
-                        </button>
+                        <div className="relative">
+                            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="p-2 hover:bg-white/50 rounded-full transition-all border border-transparent flex items-center">
+                                <span className="material-symbols-outlined text-surface">person</span>
+                            </button>
+                            <ProfileDropdown isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} userEmail={userEmail} />
+                        </div>
                     ) : (
                         <Link href="/login" className="hidden md:flex items-center gap-2 bg-surface text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-surface/90 transition-all">
                             <span className="material-symbols-outlined text-sm">person</span>
-                            Login
+                            Ingresar
                         </Link>
                     )}
                 </div>
             </div>
-
-            <CartDropdown isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-            {isAuthenticated && (
-                <ProfileDropdown isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} userEmail={userEmail} />
-            )}
         </nav>
     );
 }

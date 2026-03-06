@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import Navbar from '@/shared/components/Navbar';
-import Footer from '@/shared/components/Footer';
+import PageLayout from '@/shared/components/PageLayout';
+import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { userAPI } from '../api/user.api';
 import { useProfileQuery } from '../hooks/useProfileQuery';
 import { useAddressesQuery } from '../hooks/useAddressesQuery';
@@ -15,7 +14,6 @@ import {
 const EMPTY_ARRAY = [];
 
 function ProfilePage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -71,12 +69,7 @@ function ProfilePage() {
   const provinces = provincesData ?? EMPTY_ARRAY;
   const districts = districtsData ?? EMPTY_ARRAY;
 
-  useEffect(() => {
-    const authError = profileError || addressesError;
-    if (authError && (authError.message?.includes('401') || authError.message?.includes('Unauthorized'))) {
-      router.push('/login');
-    }
-  }, [profileError, addressesError, router]);
+  useAuthRedirect(profileError, addressesError);
 
   useEffect(() => {
     if (profile) {
@@ -122,12 +115,12 @@ function ProfilePage() {
         lastName: profileForm.lastName,
         phone: profileForm.phone,
       });
-      setSuccess('Profile updated successfully');
+      setSuccess('Perfil actualizado correctamente');
       queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       setIsEditingProfile(false);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError(err.message || 'Error updating profile');
+      setError(err.message || 'Error al actualizar perfil');
     } finally {
       setLoading(false);
     }
@@ -142,10 +135,10 @@ function ProfilePage() {
     try {
       if (editingAddressId) {
         await userAPI.updateAddress(editingAddressId, addressForm);
-        setSuccess('Address updated successfully');
+        setSuccess('Dirección actualizada correctamente');
       } else {
         await userAPI.createAddress(addressForm);
-        setSuccess('Address created successfully');
+        setSuccess('Dirección creada correctamente');
       }
 
       await refetchAddresses();
@@ -158,14 +151,14 @@ function ProfilePage() {
       });
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError(err.message || 'Error saving address');
+      setError(err.message || 'Error al guardar dirección');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteAddress = async (addressId) => {
-    if (!confirm('Are you sure you want to delete this address?')) {
+    if (!confirm('¿Estás seguro de que deseas eliminar esta dirección?')) {
       return;
     }
 
@@ -174,11 +167,11 @@ function ProfilePage() {
 
     try {
       await userAPI.deleteAddress(addressId);
-      setSuccess('Address deleted successfully');
+      setSuccess('Dirección eliminada correctamente');
       await refetchAddresses();
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError(err.message || 'Error deleting address');
+      setError(err.message || 'Error al eliminar dirección');
     } finally {
       setLoading(false);
     }
@@ -202,92 +195,88 @@ function ProfilePage() {
   const isLoading = profileLoading || addressesLoading || departmentsLoading;
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      <Navbar />
-      <main className="flex-1 w-full pt-20 pb-20">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-300 mb-2">
-              Mi Perfil
-            </h1>
-            <p className="text-gray-400">
-              Gestiona tu información personal, direcciones y configuraciones de la cuenta
-            </p>
-          </div>
+    <PageLayout className="w-full pt-12 pb-20">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-surface mb-2">
+            Mi Perfil
+          </h1>
+          <p className="text-surface/60">
+            Gestiona tu información personal, direcciones y configuraciones de la cuenta
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <ProfileSidebar
-              activeTab={activeTab}
-              onSelectProfile={() => {
-                setActiveTab('profile');
-                handleCancelEdit();
-              }}
-              onSelectAddresses={() => {
-                setActiveTab('addresses');
-                handleCancelEdit();
-              }}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <ProfileSidebar
+            activeTab={activeTab}
+            onSelectProfile={() => {
+              setActiveTab('profile');
+              handleCancelEdit();
+            }}
+            onSelectAddresses={() => {
+              setActiveTab('addresses');
+              handleCancelEdit();
+            }}
+          />
 
-            <div className="md:col-span-3">
-              <ProfileMessages error={error} success={success} />
+          <div className="md:col-span-3">
+            <ProfileMessages error={error} success={success} />
 
-              {activeTab === 'profile' && (
-                <ProfileInfoCard
-                  isLoading={isLoading}
-                  isEditing={isEditingProfile}
-                  profile={profile}
-                  profileForm={profileForm}
-                  setProfileForm={setProfileForm}
-                  onStartEdit={() => setIsEditingProfile(true)}
-                  onCancelEdit={() => {
-                    setIsEditingProfile(false);
-                    setError('');
-                    setSuccess('');
-                    if (profile) {
-                      setProfileForm({
-                        firstName: profile.firstName || '',
-                        lastName: profile.lastName || '',
-                        email: profile.email || '',
-                        phone: profile.phone || '',
-                      });
-                    }
-                  }}
-                  onSubmit={handleProfileSubmit}
+            {activeTab === 'profile' && (
+              <ProfileInfoCard
+                isLoading={isLoading}
+                isEditing={isEditingProfile}
+                profile={profile}
+                profileForm={profileForm}
+                setProfileForm={setProfileForm}
+                onStartEdit={() => setIsEditingProfile(true)}
+                onCancelEdit={() => {
+                  setIsEditingProfile(false);
+                  setError('');
+                  setSuccess('');
+                  if (profile) {
+                    setProfileForm({
+                      firstName: profile.firstName || '',
+                      lastName: profile.lastName || '',
+                      email: profile.email || '',
+                      phone: profile.phone || '',
+                    });
+                  }
+                }}
+                onSubmit={handleProfileSubmit}
+                loading={loading}
+              />
+            )}
+
+            {activeTab === 'addresses' && (
+              <div className="space-y-6">
+                <AddressFormCard
+                  addressForm={addressForm}
+                  setAddressForm={setAddressForm}
+                  editingAddressId={editingAddressId}
+                  departments={departments}
+                  provinces={provinces}
+                  districts={districts}
+                  departmentsLoading={departmentsLoading}
+                  provincesLoading={provincesLoading}
+                  districtsLoading={districtsLoading}
+                  onSubmit={handleAddressSubmit}
+                  onCancelEdit={handleCancelEdit}
                   loading={loading}
                 />
-              )}
 
-              {activeTab === 'addresses' && (
-                <div className="space-y-6">
-                  <AddressFormCard
-                    addressForm={addressForm}
-                    setAddressForm={setAddressForm}
-                    editingAddressId={editingAddressId}
-                    departments={departments}
-                    provinces={provinces}
-                    districts={districts}
-                    departmentsLoading={departmentsLoading}
-                    provincesLoading={provincesLoading}
-                    districtsLoading={districtsLoading}
-                    onSubmit={handleAddressSubmit}
-                    onCancelEdit={handleCancelEdit}
-                    loading={loading}
-                  />
-
-                  <AddressesListCard
-                    addresses={addresses}
-                    addressesLoading={addressesLoading}
-                    onEditAddress={handleEditAddress}
-                    onDeleteAddress={handleDeleteAddress}
-                  />
-                </div>
-              )}
-            </div>
+                <AddressesListCard
+                  addresses={addresses}
+                  addressesLoading={addressesLoading}
+                  onEditAddress={handleEditAddress}
+                  onDeleteAddress={handleDeleteAddress}
+                />
+              </div>
+            )}
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageLayout>
   );
 }
 
@@ -297,41 +286,21 @@ function ProfileSidebar({ activeTab, onSelectProfile, onSelectAddresses }) {
       <button
         onClick={onSelectProfile}
         className={`w-full text-left px-4 py-3 rounded-xl transition-all font-medium flex items-center gap-3 ${activeTab === 'profile'
-          ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
-          : 'text-gray-400 hover:text-white hover:bg-white/5'
+          ? 'bg-primary text-white shadow-lg shadow-primary/20'
+          : 'text-surface/60 hover:text-surface hover:bg-surface/5'
           }`}
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-          />
-        </svg>
+        <span className="material-symbols-outlined text-[20px]">person</span>
         Información Personal
       </button>
       <button
         onClick={onSelectAddresses}
         className={`w-full text-left px-4 py-3 rounded-xl transition-all font-medium flex items-center gap-3 ${activeTab === 'addresses'
-          ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/30'
-          : 'text-gray-400 hover:text-white hover:bg-white/5'
+          ? 'bg-primary text-white shadow-lg shadow-primary/20'
+          : 'text-surface/60 hover:text-surface hover:bg-surface/5'
           }`}
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
+        <span className="material-symbols-outlined text-[20px]">location_on</span>
         Direcciones
       </button>
     </div>
@@ -345,28 +314,14 @@ function ProfileMessages({ error, success }) {
     <>
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <span className="material-symbols-outlined text-[20px]">error</span>
           <p className="text-sm">{error}</p>
         </div>
       )}
 
       {success && (
         <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+          <span className="material-symbols-outlined text-[20px]">check_circle</span>
           <p className="text-sm">{success}</p>
         </div>
       )}
@@ -387,23 +342,23 @@ function ProfileInfoCard({
 }) {
   if (isLoading) {
     return (
-      <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
+      <div className="bg-white border border-surface/10 rounded-2xl p-6 lg:p-8">
         <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <div className="flex items-center justify-between pb-4 border-b border-white/10">
-        <h2 className="text-xl font-bold text-white mb-0">Información Personal</h2>
+    <div className="bg-white border border-surface/10 rounded-2xl p-6 lg:p-8">
+      <div className="flex items-center justify-between pb-4 border-b border-surface/10">
+        <h2 className="text-xl font-bold text-surface mb-0">Información Personal</h2>
         {!isEditing ? (
           <button
             type="button"
             onClick={onStartEdit}
-            className="px-4 py-2 text-sm font-medium text-purple-400 border border-purple-400/30 rounded-lg hover:bg-purple-400/10 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-primary border border-primary/30 rounded-lg hover:bg-primary/10 transition-colors"
           >
             Editar Perfil
           </button>
@@ -411,7 +366,7 @@ function ProfileInfoCard({
           <button
             type="button"
             onClick={onCancelEdit}
-            className="px-4 py-2 text-sm font-medium text-gray-400 border border-white/10 rounded-lg hover:text-white hover:bg-white/5 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-surface/60 border border-surface/10 rounded-lg hover:text-surface hover:bg-surface/5 transition-colors"
           >
             Cancelar
           </button>
@@ -421,27 +376,27 @@ function ProfileInfoCard({
       {!isEditing ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
           <div>
-            <p className="text-sm text-gray-500 mb-1">Nombre</p>
-            <p className="text-base font-medium text-white">
-              {profileForm.firstName || 'Not specified'}
+            <p className="text-sm text-surface/40 mb-1">Nombre</p>
+            <p className="text-base font-medium text-surface">
+              {profileForm.firstName || 'No especificado'}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500 mb-1">Apellido</p>
-            <p className="text-base font-medium text-white">
-              {profileForm.lastName || 'Not specified'}
+            <p className="text-sm text-surface/40 mb-1">Apellido</p>
+            <p className="text-base font-medium text-surface">
+              {profileForm.lastName || 'No especificado'}
             </p>
           </div>
           <div className="sm:col-span-2">
-            <p className="text-sm text-gray-500 mb-1">Email</p>
-            <p className="text-base font-medium text-white">
-              {profileForm.email || 'Not available'}
+            <p className="text-sm text-surface/40 mb-1">Email</p>
+            <p className="text-base font-medium text-surface">
+              {profileForm.email || 'No disponible'}
             </p>
           </div>
           <div className="sm:col-span-2">
-            <p className="text-sm text-gray-500 mb-1">Telefono</p>
-            <p className="text-base font-medium text-white">
-              {profileForm.phone || 'Not specified'}
+            <p className="text-sm text-surface/40 mb-1">Telefono</p>
+            <p className="text-base font-medium text-surface">
+              {profileForm.phone || 'No especificado'}
             </p>
           </div>
         </div>
@@ -449,7 +404,7 @@ function ProfileInfoCard({
         <form onSubmit={onSubmit} className="space-y-6 mt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label htmlFor="firstName" className="text-sm text-gray-400">
+              <label htmlFor="firstName" className="text-sm text-surface/60">
                 Nombre
               </label>
               <input
@@ -457,13 +412,13 @@ function ProfileInfoCard({
                 type="text"
                 value={profileForm.firstName}
                 onChange={(e) => setProfileForm({ ...profileForm, firstName: e.target.value })}
-                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                placeholder="Enter your first name"
+                className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors"
+                placeholder="Ingresa tu nombre"
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="lastName" className="text-sm text-gray-400">
+              <label htmlFor="lastName" className="text-sm text-surface/60">
                 Apellido
               </label>
               <input
@@ -471,13 +426,13 @@ function ProfileInfoCard({
                 type="text"
                 value={profileForm.lastName}
                 onChange={(e) => setProfileForm({ ...profileForm, lastName: e.target.value })}
-                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                placeholder="Enter your last name"
+                className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors"
+                placeholder="Ingresa tu apellido"
               />
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="email" className="text-sm text-gray-400">
+              <label htmlFor="email" className="text-sm text-surface/60">
                 Email
               </label>
               <input
@@ -486,13 +441,13 @@ function ProfileInfoCard({
                 value={profileForm.email}
                 readOnly
                 disabled
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-500 cursor-not-allowed"
+                className="w-full px-4 py-3 bg-surface/5 border border-surface/10 rounded-xl text-surface/40 cursor-not-allowed"
                 placeholder="youremail@example.com"
               />
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <label htmlFor="phone" className="text-sm text-gray-400">
+              <label htmlFor="phone" className="text-sm text-surface/60">
                 Telefono
               </label>
               <input
@@ -505,7 +460,7 @@ function ProfileInfoCard({
                   const digits = e.target.value.replace(/\D/g, '').slice(0, 9);
                   setProfileForm({ ...profileForm, phone: digits });
                 }}
-                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors"
                 placeholder="987654321"
               />
             </div>
@@ -514,9 +469,9 @@ function ProfileInfoCard({
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
           >
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </form>
       )}
@@ -539,14 +494,14 @@ function AddressFormCard({
   loading,
 }) {
   return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <h2 className="text-xl font-bold text-white mb-6">
+    <div className="bg-white border border-surface/10 rounded-2xl p-6 lg:p-8">
+      <h2 className="text-xl font-bold text-surface mb-6">
         {editingAddressId ? 'Edita dirección' : 'Añade una nueva dirección'}
       </h2>
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-2">
-            <label htmlFor="street" className="text-sm text-gray-400">
+            <label htmlFor="street" className="text-sm text-surface/60">
               Dirección
             </label>
             <input
@@ -555,7 +510,7 @@ function AddressFormCard({
               value={addressForm.street}
               onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })}
               required
-              className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+              className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors"
               placeholder="Nombre y número de la calle"
             />
           </div>
@@ -563,7 +518,7 @@ function AddressFormCard({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <label htmlFor="department" className="text-sm text-gray-400">
+            <label htmlFor="department" className="text-sm text-surface/60">
               Departamento
             </label>
             <select
@@ -578,7 +533,7 @@ function AddressFormCard({
                 });
               }}
               required
-              className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none"
+              className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors appearance-none"
               disabled={departmentsLoading}
             >
               <option value="">Seleccione</option>
@@ -591,7 +546,7 @@ function AddressFormCard({
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="province" className="text-sm text-gray-400">
+            <label htmlFor="province" className="text-sm text-surface/60">
               Provincia
             </label>
             <select
@@ -605,7 +560,7 @@ function AddressFormCard({
                 });
               }}
               required
-              className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none"
+              className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors appearance-none"
               disabled={!addressForm.department || provincesLoading}
             >
               <option value="">Seleccione</option>
@@ -618,7 +573,7 @@ function AddressFormCard({
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="district" className="text-sm text-gray-400">
+            <label htmlFor="district" className="text-sm text-surface/60">
               Distrito
             </label>
             <select
@@ -626,7 +581,7 @@ function AddressFormCard({
               value={addressForm.district}
               onChange={(e) => setAddressForm({ ...addressForm, district: e.target.value })}
               required
-              className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none"
+              className="w-full px-4 py-3 bg-background-light/50 border border-surface/10 rounded-xl text-surface focus:outline-none focus:border-primary transition-colors appearance-none"
               disabled={!addressForm.province || districtsLoading}
             >
               <option value="">Seleccione</option>
@@ -643,17 +598,17 @@ function AddressFormCard({
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-colors disabled:opacity-50"
           >
-            {loading ? 'Saving...' : editingAddressId ? 'Update Address' : 'Create Address'}
+            {loading ? 'Guardando...' : editingAddressId ? 'Actualizar dirección' : 'Crear dirección'}
           </button>
           {editingAddressId && (
             <button
               type="button"
               onClick={onCancelEdit}
-              className="px-6 py-3 text-gray-400 hover:text-white font-medium transition-colors"
+              className="px-6 py-3 text-surface/60 hover:text-surface font-medium transition-colors"
             >
-              Cancel
+              Cancelar
             </button>
           )}
         </div>
@@ -669,49 +624,36 @@ function AddressesListCard({
   onDeleteAddress,
 }) {
   return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <h2 className="text-xl font-bold text-white mb-6">Direcciones guardadas</h2>
+    <div className="bg-white border border-surface/10 rounded-2xl p-6 lg:p-8">
+      <h2 className="text-xl font-bold text-surface mb-6">Direcciones guardadas</h2>
       {addressesLoading ? (
         <div className="flex justify-center py-8">
-          <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : addresses.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500">No has guardado ninguna dirección.</p>
+          <p className="text-surface/40">No has guardado ninguna dirección.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {addresses.map((address) => (
             <div
               key={address.id}
-              className="bg-black/30 border border-white/5 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start gap-4"
+              className="bg-background-light border border-surface/5 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start gap-4"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <p className="font-semibold text-white">{address.street}</p>
+                  <span className="material-symbols-outlined text-[20px] text-primary">location_on</span>
+                  <p className="font-semibold text-surface">{address.street}</p>
                 </div>
-                <p className="text-sm text-gray-400 pl-7">
+                <p className="text-sm text-surface/60 pl-7">
                   {address.district}, {address.province}, {address.department}
                 </p>
               </div>
               <div className="flex gap-3 pl-7 sm:pl-0">
                 <button
                   onClick={() => onEditAddress(address)}
-                  className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
+                  className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >
                   Editar
                 </button>
@@ -731,4 +673,3 @@ function AddressesListCard({
 }
 
 export default ProfilePage;
-

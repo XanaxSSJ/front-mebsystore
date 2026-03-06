@@ -1,71 +1,27 @@
-import { API_BASE_URL, defaultFetchOptions, getAuthHeaders } from '@/lib/http/client';
+import { fetchAPI } from '@/lib/http/client';
 
 export const orderAPI = {
     create: async (orderData) => {
-        const response = await fetch(`${API_BASE_URL}/orders`, {
-            ...defaultFetchOptions,
+        return await fetchAPI('/orders', {
             method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(orderData),
+            body: orderData,
+            errorMessage: 'Error al crear la orden',
         });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al crear la orden' }));
-            throw new Error(error.error || error.message || 'Error al crear la orden');
-        }
-
-        return await response.json();
     },
 
     getMyOrders: async () => {
-        const response = await fetch(`${API_BASE_URL}/orders/me`, {
-            ...defaultFetchOptions,
-            method: 'GET',
-            headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al obtener órdenes' }));
-            throw new Error(error.message || 'Error al obtener órdenes');
-        }
-
-        return await response.json();
+        return await fetchAPI('/orders/me', { errorMessage: 'Error al obtener órdenes' });
     },
 
     getById: async (orderId) => {
-        const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
-            ...defaultFetchOptions,
-            method: 'GET',
-            headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al obtener la orden' }));
-            throw new Error(error.message || 'Error al obtener la orden');
-        }
-
-        return await response.json();
+        return await fetchAPI(`/orders/${orderId}`, { errorMessage: 'Error al obtener la orden' });
     },
 
     createPaymentPreference: async (orderId, shippingCost) => {
-        const response = await fetch(`${API_BASE_URL}/orders/${orderId}/payment/preference`, {
-            ...defaultFetchOptions,
+        return await fetchAPI(`/orders/${orderId}/payment/preference`, {
             method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify({
-                shippingCost: shippingCost,
-            }),
+            body: { shippingCost },
+            errorMessage: 'Error al crear preferencia de pago',
         });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({
-                message: `Error al crear preferencia de pago (${response.status})`,
-            }));
-            throw new Error(
-                error.error || error.message || `Error al crear preferencia de pago (${response.status})`,
-            );
-        }
-
-        return await response.json();
     },
 };

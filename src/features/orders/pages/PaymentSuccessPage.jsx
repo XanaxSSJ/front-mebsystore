@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Navbar from '@/shared/components/Navbar';
-import Footer from '@/shared/components/Footer';
+import PageLayout from '@/shared/components/PageLayout';
 
 function PaymentSuccessPage() {
   const router = useRouter();
@@ -36,19 +35,14 @@ function PaymentSuccessPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-600">Cargando...</p>
-        </div>
-      </div>
+      <PageLayout className="flex items-center justify-center">
+        <p className="text-surface/60">Cargando...</p>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <Navbar />
-      <main className="flex-1 w-full flex justify-center items-center">
+    <PageLayout className="w-full flex justify-center items-center">
         <div className="w-full max-w-md text-center px-4">
           {paymentStatus === 'success' && (
             <div className="space-y-6">
@@ -77,13 +71,13 @@ function PaymentSuccessPage() {
               <div className="space-y-3 pt-4">
                 <button
                   onClick={() => router.push('/ordenes')}
-                  className="w-full py-3 px-6 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  className="w-full py-3 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Ver Mis Órdenes
                 </button>
                 <button
                   onClick={() => router.push('/productos')}
-                  className="w-full py-3 px-6 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full py-3 px-6 bg-white border-2 border-surface/20 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Seguir Comprando
                 </button>
@@ -118,7 +112,7 @@ function PaymentSuccessPage() {
               <div className="space-y-3 pt-4">
                 <button
                   onClick={() => router.push('/ordenes')}
-                  className="w-full py-3 px-6 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  className="w-full py-3 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Ver Mis Órdenes
                 </button>
@@ -153,13 +147,13 @@ function PaymentSuccessPage() {
               <div className="space-y-3 pt-4">
                 <button
                   onClick={() => router.push('/checkout')}
-                  className="w-full py-3 px-6 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
+                  className="w-full py-3 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Intentar Nuevamente
                 </button>
                 <button
                   onClick={() => router.push('/productos')}
-                  className="w-full py-3 px-6 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full py-3 px-6 bg-white border-2 border-surface/20 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Volver a Productos
                 </button>
@@ -167,10 +161,7 @@ function PaymentSuccessPage() {
             </div>
           )}
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
 

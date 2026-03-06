@@ -1,18 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { useCartStore } from '@/store/cart.store';
 import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
 
 function ProductCard({ product }) {
-    const addToCart = useCartStore((state) => state.addToCart);
-
-    const handleAddToCart = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        addToCart(product);
-    };
+    const totalStock = product.variants?.reduce((acc, v) => acc + (v.stock || 0), 0) ?? product.stock ?? 0;
 
     return (
         <Link href={`/producto/${product.id}`} className="group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 p-2">
@@ -29,21 +22,14 @@ function ProductCard({ product }) {
                     </div>
                 )}
 
-                {product.stock > 0 ? (
-                    <button
-                        onClick={handleAddToCart}
-                        className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur text-surface py-3 rounded-lg font-bold opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-white"
-                    >
-                        Agregar al Carrito
-                    </button>
-                ) : (
+                {totalStock <= 0 && (
                     <div className="absolute top-4 right-4 bg-red-500/90 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">
                         Agotado
                     </div>
                 )}
 
-                {product.price > 150 && product.stock > 0 && (
-                    <span className="absolute top-4 left-4 bg-primary text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">New</span>
+                {product.price > 150 && totalStock > 0 && (
+                    <span className="absolute top-4 left-4 bg-primary text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Nuevo</span>
                 )}
 
                 <button
@@ -56,7 +42,7 @@ function ProductCard({ product }) {
 
             <div className="px-2 pb-2">
                 <h3 className="text-lg font-bold text-surface line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
-                <p className="text-sm text-surface/50 mb-3 line-clamp-1">{product.description || 'Premium Details • Sustainable'}</p>
+                <p className="text-sm text-surface/50 mb-3 line-clamp-1">{product.description || 'Detalles Premium • Sostenible'}</p>
                 <p className="text-xl font-extrabold text-primary">{formatPrice(product.price)}</p>
             </div>
         </Link>

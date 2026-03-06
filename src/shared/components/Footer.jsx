@@ -52,7 +52,7 @@ function Footer() {
                     </div>
                 </div>
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-xs font-medium">
-                    <p>© 2026 Mebsy Premium Essentials. All rights reserved.</p>
+                    <p>© 2026 Mebsy Premium Essentials. Todos los derechos reservados.</p>
                     <div className="flex gap-8">
                         <Link href="/" className="hover:text-white">Política de Privacidad</Link>
                         <Link href="/" className="hover:text-white">Términos de Servicio</Link>

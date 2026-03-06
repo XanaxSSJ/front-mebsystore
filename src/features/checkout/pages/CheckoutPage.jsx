@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Navbar from '@/shared/components/Navbar';
-import Footer from '@/shared/components/Footer';
+import PageLayout from '@/shared/components/PageLayout';
+import { useAuthRedirect } from '@/shared/hooks/useAuthRedirect';
 import { orderAPI } from '@/features/orders/api/orders.api';
 import { useCartStore } from '@/store/cart.store';
 import { useProfileQuery } from '@/features/user/hooks/useProfileQuery';
 import { useAddressesQuery } from '@/features/user/hooks/useAddressesQuery';
-import { useProductsQuery } from '@/features/products/hooks/useProductsQuery';
 import { useOrderByIdQuery } from '@/features/orders/hooks/useOrderByIdQuery';
 import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
@@ -38,26 +37,11 @@ function CheckoutPage() {
   } = useAddressesQuery();
 
   const {
-    data: productsData,
-    isLoading: productsLoading,
-  } = useProductsQuery();
-
-  const {
     data: existingOrderData,
     isLoading: existingOrderLoading,
   } = useOrderByIdQuery(orderIdParam);
 
-  const userEmail = profile?.email || '';
   const addresses = addressesData ?? EMPTY_ARRAY;
-  const productsDataSafe = productsData ?? EMPTY_ARRAY;
-
-  const products = useMemo(() => {
-    const map = {};
-    productsDataSafe.forEach((product) => {
-      map[product.id] = product;
-    });
-    return map;
-  }, [productsDataSafe]);
 
   const existingOrder =
     existingOrderData && existingOrderData.status === 'PENDING_PAYMENT'
@@ -67,15 +51,9 @@ function CheckoutPage() {
   const loading =
     profileLoading ||
     addressesLoading ||
-    productsLoading ||
     (orderIdParam && existingOrderLoading);
 
-  useEffect(() => {
-    const authError = profileError || addressesError;
-    if (authError && (authError.message?.includes('401') || authError.message?.includes('Unauthorized'))) {
-      router.push('/login');
-    }
-  }, [profileError, addressesError, router]);
+  useAuthRedirect(profileError, addressesError);
 
   useEffect(() => {
     if (!selectedAddressId && addresses.length === 1) {
@@ -140,6 +118,7 @@ function CheckoutPage() {
         const orderData = {
           items: cartItems.map((item) => ({
             productId: item.productId,
+            variantId: item.variantId,
             quantity: item.quantity,
           })),
           shippingAddressId: selectedAddressId,
@@ -152,7 +131,6 @@ function CheckoutPage() {
 
       clearCart();
       window.location.href = preferenceResponse.initPoint;
-
     } catch (error) {
       console.error('Error al procesar el pago:', error);
       alert(`Error al procesar el pago: ${error.message}`);
@@ -162,27 +140,29 @@ function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-black items-center justify-center">
-        <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <PageLayout className="flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </PageLayout>
     );
   }
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col bg-black text-white">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
+      <PageLayout className="flex flex-col items-center justify-center px-4">
+          <div className="w-20 h-20 rounded-full bg-white shadow-sm flex items-center justify-center mb-4">
+            <span className="material-symbols-outlined text-4xl text-primary">shopping_bag</span>
+          </div>
+          <h1 className="text-3xl font-extrabold mb-2">Tu carrito está vacío</h1>
+          <p className="text-surface/60 mb-6 text-center max-w-md">
+            Aún no has agregado productos a tu bolsa. Explora la tienda y encuentra algo que te encante.
+          </p>
           <button
             onClick={() => router.push('/productos')}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="px-8 py-3 bg-primary text-white font-bold rounded-full hover:opacity-90 transition-all"
           >
-            Go to Products
+            Ver productos
           </button>
-        </div>
-        <Footer />
-      </div>
+      </PageLayout>
     );
   }
 
@@ -194,58 +174,59 @@ function CheckoutPage() {
   const total = calculateTotal();
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      <Navbar />
+    <PageLayout className="px-6 md:px-20 lg:px-40 py-10 flex flex-col lg:flex-row gap-12 max-w-[1440px] mx-auto w-full">
+        {/* Left: steps + shipping + methods */}
+        <div className="flex-1 space-y-10">
+          {/* Breadcrumbs / steps */}
+          <nav className="flex items-center gap-2 text-sm font-medium text-surface/50 mb-2">
+            <button
+              type="button"
+              onClick={() => router.push('/carrito')}
+              className="hover:text-primary transition-colors"
+            >
+              Carrito
+            </button>
+            <span className="material-symbols-outlined text-xs">chevron_right</span>
+            <span className="text-surface">Checkout</span>
+          </nav>
+          <h1 className="text-4xl font-extrabold tracking-tight text-surface">Checkout</h1>
 
-      <main className="flex-1 w-full flex justify-center pt-24 pb-20">
-        <div className="w-full max-w-6xl px-4">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Checkout</h1>
-            <p className="text-gray-400">
-              Completa tu información para finalizar tu compra
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            <OrderSummaryCard
-              cartItems={cartItems}
-              products={products}
-              subtotal={subtotal}
-              shipping={shipping}
-              total={total}
-              onPay={handlePay}
-              processing={processing}
-              hasShippingAddress={Boolean(selectedAddressId)}
+          {/* Contact + address + delivery */}
+          <section className="space-y-6">
+            <ShippingAddressSelector
+              addresses={addresses}
+              selectedAddressId={selectedAddressId}
+              onSelectAddress={setSelectedAddressId}
+              onManageAddresses={() => router.push('/perfil')}
             />
-
-            <div className="space-y-6">
-              <ContactInfoCard userEmail={userEmail} />
-              <ShippingAddressSelector
-                addresses={addresses}
-                selectedAddressId={selectedAddressId}
-                onSelectAddress={setSelectedAddressId}
-                onManageAddresses={() => router.push('/perfil')}
-              />
-              <DeliveryMethodSelector
-                deliveryMethod={deliveryMethod}
-                onChangeDeliveryMethod={setDeliveryMethod}
-                shippingCourier={shippingCourier}
-                shippingLocal={shippingLocal}
-                shippingPickup={shippingPickup}
-              />
-            </div>
-          </div>
+            <DeliveryMethodSelector
+              deliveryMethod={deliveryMethod}
+              onChangeDeliveryMethod={setDeliveryMethod}
+              shippingCourier={shippingCourier}
+              shippingLocal={shippingLocal}
+              shippingPickup={shippingPickup}
+            />
+          </section>
         </div>
-      </main>
 
-      <Footer />
-    </div>
+        {/* Right: order summary sticky */}
+        <div className="lg:w-[400px] w-full">
+          <OrderSummaryCard
+            cartItems={cartItems}
+            subtotal={subtotal}
+            shipping={shipping}
+            total={total}
+            onPay={handlePay}
+            processing={processing}
+            hasShippingAddress={Boolean(selectedAddressId)}
+          />
+        </div>
+    </PageLayout>
   );
 }
 
 function OrderSummaryCard({
   cartItems,
-  products,
   subtotal,
   shipping,
   total,
@@ -254,84 +235,78 @@ function OrderSummaryCard({
   hasShippingAddress,
 }) {
   return (
-    <div className="space-y-6">
-      <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-        <h2 className="text-xl font-bold text-white mb-6">Resumen de la orden</h2>
+    <div className="rounded-xl bg-white p-8 shadow-sm border border-primary/5 space-y-6">
+      <h2 className="text-xl font-extrabold mb-4 text-surface border-b border-primary/10 pb-4">
+        Resumen de la orden
+      </h2>
 
-        <div className="space-y-4 mb-6">
-          {cartItems.map((item, index) => (
-            <div
-              key={item.productId}
-              className={`flex gap-4 ${index < cartItems.length - 1 ? 'pb-4 border-b border-white/5' : ''}`}
-            >
-              <div className="w-20 h-20 bg-white/5 rounded-lg flex-shrink-0 flex items-center justify-center border border-white/5 overflow-hidden">
-                {products[item.productId]?.imageUrl ? (
-                  <img
-                    src={ensureHttps(products[item.productId].imageUrl)}
-                    alt={item.productName}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                )}
-              </div>
-
-              <div className="flex-1">
-                <h3 className="font-semibold text-white mb-1 line-clamp-1">{item.productName}</h3>
-                <p className="text-sm text-gray-400 mb-2 line-clamp-1">
-                  {products[item.productId]?.description || 'Premium Product'}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Qty: {item.quantity}</span>
-                  <span className="font-bold text-white">{formatPrice(item.price * item.quantity)}</span>
+      {/* Items */}
+      <div className="space-y-4 mb-4">
+        {cartItems.map((item) => (
+          <div key={item.variantId} className="flex items-center gap-4">
+            <div className="relative h-20 w-20 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-primary/10">
+              {item.imageUrl ? (
+                <img
+                  src={ensureHttps(item.imageUrl)}
+                  alt={item.productName}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-surface/30">
+                  <span className="material-symbols-outlined text-2xl">image</span>
                 </div>
-              </div>
+              )}
+              <span className="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center">
+                {item.quantity}
+              </span>
             </div>
-          ))}
-        </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-surface line-clamp-1">
+                {item.productName}
+              </p>
+              {item.attributes?.length > 0 && (
+                <p className="text-[10px] text-surface/50 mt-0.5">
+                  {item.attributes.map(a => `${a.name}: ${a.value}`).join(' / ')}
+                </p>
+              )}
+            </div>
+            <p className="text-sm font-bold text-surface">
+              {formatPrice(item.price * item.quantity)}
+            </p>
+          </div>
+        ))}
+      </div>
 
-        <div className="space-y-3 pt-4 border-t border-white/10">
-          <div className="flex justify-between text-gray-400">
-            <span>Subtotal</span>
-            <span className="font-semibold text-white">{formatPrice(subtotal)}</span>
-          </div>
-          <div className="flex justify-between text-gray-400">
-            <span>Shipping</span>
-            <span className="font-semibold text-white">{formatPrice(shipping)}</span>
-          </div>
-          <div className="flex justify-between text-xl font-bold text-white pt-4 border-t border-white/10 mt-4">
-            <span>Total</span>
-            <span className="text-purple-400">{formatPrice(total)}</span>
-          </div>
+      {/* Price breakdown */}
+      <div className="space-y-3 border-t border-primary/10 pt-4 text-sm font-medium">
+        <div className="flex justify-between text-surface/70">
+          <span>Subtotal</span>
+          <span>{formatPrice(subtotal)}</span>
         </div>
+        <div className="flex justify-between text-surface/70">
+          <span>Envío</span>
+          <span>{formatPrice(shipping)}</span>
+        </div>
+        <div className="flex justify-between text-xl font-extrabold text-surface pt-3">
+          <span>Total</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+      </div>
 
+      {/* Payment CTA */}
+      <div className="space-y-3 pt-2">
+        <p className="text-[10px] text-center text-surface/50 font-medium uppercase tracking-widest">
+          Checkout seguro con Mercado Pago
+        </p>
         <button
           onClick={onPay}
           disabled={processing || !hasShippingAddress}
-          className="w-full mt-8 py-4 bg-gradient-to-r from-purple-700 to-indigo-700 text-white font-bold rounded-xl hover:from-purple-600 hover:to-indigo-600 transition-all shadow-lg shadow-purple-900/30 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1"
+          className="w-full bg-primary hover:opacity-90 text-white rounded-xl h-14 font-extrabold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {processing ? 'Processing...' : 'Pay Now'}
+          <span className="material-symbols-outlined">payments</span>
+          {processing ? 'Procesando...' : 'Pagar ahora'}
         </button>
-      </div>
-    </div>
-  );
-}
-
-function ContactInfoCard({ userEmail }) {
-  return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <h2 className="text-xl font-bold text-white mb-4">Información de contacto</h2>
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-400">Email</label>
-        <input
-          type="email"
-          value={userEmail}
-          disabled
-          className="w-full px-4 py-3 border border-white/10 rounded-lg bg-black/50 text-gray-500 cursor-not-allowed focus:outline-none"
-        />
       </div>
     </div>
   );
@@ -346,56 +321,68 @@ function ShippingAddressSelector({
   const hasAddresses = addresses.length > 0;
 
   return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-white">Dirección de envío</h2>
-        <button
-          onClick={onManageAddresses}
-          className="text-sm text-purple-400 hover:text-purple-300"
-        >
-          Manage
-        </button>
+    <section className="space-y-4">
+      <div className="flex items-center gap-2">
+        <span className="material-symbols-outlined text-primary">local_shipping</span>
+        <h2 className="text-xl font-bold text-surface">Dirección de envío</h2>
       </div>
 
-      {!hasAddresses ? (
-        <div className="text-center py-6 border border-dashed border-white/10 rounded-xl">
-          <p className="text-gray-500 mb-4">No addresses found</p>
+      <div className="bg-white rounded-xl border border-primary/10 p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-surface/60">
+            Selecciona una dirección para el envío de tu pedido.
+          </p>
           <button
+            type="button"
             onClick={onManageAddresses}
-            className="px-4 py-2 text-white bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+            className="text-xs font-bold text-primary hover:underline"
           >
-            Agregar dirección
+            Gestionar
           </button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {addresses.map((address) => (
-            <label
-              key={address.id}
-              className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${selectedAddressId === address.id
-                ? 'border-purple-500 bg-purple-900/10'
-                : 'border-white/10 bg-black/30 hover:border-white/20'
-                }`}
+
+        {!hasAddresses ? (
+          <div className="text-center py-6 border border-dashed border-primary/20 rounded-xl">
+            <p className="text-surface/50 mb-4">No tienes direcciones registradas.</p>
+            <button
+              type="button"
+              onClick={onManageAddresses}
+              className="px-4 py-2 text-sm font-bold text-white bg-primary rounded-lg hover:opacity-90 transition-colors"
             >
-              <input
-                type="radio"
-                name="address"
-                value={address.id}
-                checked={selectedAddressId === address.id}
-                onChange={(e) => onSelectAddress(e.target.value)}
-                className="mt-1 accent-purple-500"
-              />
-              <div className="flex-1">
-                <p className="font-medium text-white">{address.street}</p>
-                <p className="text-sm text-gray-400">
-                  {address.district}, {address.province}, {address.department}
-                </p>
-              </div>
-            </label>
-          ))}
-        </div>
-      )}
-    </div>
+              Agregar dirección
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {addresses.map((address) => (
+              <label
+                key={address.id}
+                className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer border transition-all ${
+                  selectedAddressId === address.id
+                    ? 'border-primary bg-primary/5'
+                    : 'border-primary/10 bg-background-light hover:border-primary/40'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="address"
+                  value={address.id}
+                  checked={selectedAddressId === address.id}
+                  onChange={(e) => onSelectAddress(e.target.value)}
+                  className="mt-1 text-primary focus:ring-primary h-4 w-4"
+                />
+                <div className="flex-1">
+                  <p className="font-semibold text-surface">{address.street}</p>
+                  <p className="text-sm text-surface/60">
+                    {address.district}, {address.province}, {address.department}
+                  </p>
+                </div>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -413,14 +400,19 @@ function DeliveryMethodSelector({
   };
 
   return (
-    <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 lg:p-8">
-      <h2 className="text-xl font-bold text-white mb-4">Método de envío</h2>
-      <div className="space-y-3">
+    <section className="space-y-4">
+      <div className="flex items-center gap-2">
+        <span className="material-symbols-outlined text-primary">package_2</span>
+        <h2 className="text-xl font-bold text-surface">Método de envío</h2>
+      </div>
+
+      <div className="bg-white rounded-xl border border-primary/10 p-5 space-y-3">
         <label
-          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${deliveryMethod === 'courier'
-            ? 'border-purple-500 bg-purple-900/10'
-            : 'border-white/10 bg-black/30 hover:border-white/20'
-            }`}
+          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${
+            deliveryMethod === 'courier'
+              ? 'border-primary bg-primary/5'
+              : 'border-primary/10 hover:border-primary/40'
+          }`}
         >
           <div className="flex items-center justify-between gap-3">
             <input
@@ -429,45 +421,44 @@ function DeliveryMethodSelector({
               value="courier"
               checked={deliveryMethod === 'courier'}
               onChange={(e) => onChangeDeliveryMethod(e.target.value)}
-              className="w-4 h-4 accent-purple-500"
+              className="w-4 h-4 text-primary focus:ring-primary"
             />
-            <p className="font-medium text-white flex-1">Envío por courier (pago contra entrega)</p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleInfo('courier');
-              }}
-              className="w-6 h-6 flex items-center justify-center rounded-full border border-white/20 text-gray-300 hover:bg-white/10"
-              aria-label="Ver detalles del envío por courier"
-            >
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M12 3a9 9 0 110 18 9 9 0 010-18z"
-                />
-              </svg>
-            </button>
+            <div className="flex-1">
+              <p className="font-semibold text-surface">
+                Envío por courier (pago contra entrega)
+              </p>
+              <p className="text-xs text-surface/60">
+                Recibe tu pedido en cualquier ciudad del país.
+              </p>
+            </div>
+            <span className="text-sm font-bold text-surface">
+              {formatPrice(shippingCourier)}
+            </span>
           </div>
           {openInfo === 'courier' && (
-            <p className="text-xs text-gray-400 leading-relaxed pl-7">
-              Recibe tu pedido en cualquier ciudad del país. El costo del envío lo pagas al recibir tu paquete.
+            <p className="text-xs text-surface/60 leading-relaxed pl-7">
+              El costo del envío lo pagas al recibir tu paquete. En la orden solo
+              registramos 0 como costo de envío.
             </p>
           )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleInfo('courier');
+            }}
+            className="self-start mt-1 text-[11px] text-primary hover:underline pl-7"
+          >
+            {openInfo === 'courier' ? 'Ocultar detalles' : 'Ver detalles'}
+          </button>
         </label>
 
         <label
-          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${deliveryMethod === 'local'
-            ? 'border-purple-500 bg-purple-900/10'
-            : 'border-white/10 bg-black/30 hover:border-white/20'
-            }`}
+          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${
+            deliveryMethod === 'local'
+              ? 'border-primary bg-primary/5'
+              : 'border-primary/10 hover:border-primary/40'
+          }`}
         >
           <div className="flex items-center justify-between gap-3">
             <input
@@ -476,45 +467,43 @@ function DeliveryMethodSelector({
               value="local"
               checked={deliveryMethod === 'local'}
               onChange={(e) => onChangeDeliveryMethod(e.target.value)}
-              className="w-4 h-4 accent-purple-500"
+              className="w-4 h-4 text-primary focus:ring-primary"
             />
-            <p className="font-medium text-white flex-1">Entregas locales y zonas cercanas</p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleInfo('local');
-              }}
-              className="w-6 h-6 flex items-center justify-center rounded-full border border-white/20 text-gray-300 hover:bg-white/10"
-              aria-label="Ver detalles de entregas locales"
-            >
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M12 3a9 9 0 110 18 9 9 0 010-18z"
-                />
-              </svg>
-            </button>
+            <div className="flex-1">
+              <p className="font-semibold text-surface">
+                Entregas locales y zonas cercanas
+              </p>
+              <p className="text-xs text-surface/60">
+                Precio fijo dentro de la ciudad de Lima.
+              </p>
+            </div>
+            <span className="text-sm font-bold text-surface">
+              {formatPrice(shippingLocal)}
+            </span>
           </div>
           {openInfo === 'local' && (
-            <p className="text-xs text-gray-400 leading-relaxed pl-7">
-              Precio fijo dentro de la ciudad de Lima.
+            <p className="text-xs text-surface/60 leading-relaxed pl-7">
+              El reparto se realiza en horarios coordinados previamente contigo.
             </p>
           )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleInfo('local');
+            }}
+            className="self-start mt-1 text-[11px] text-primary hover:underline pl-7"
+          >
+            {openInfo === 'local' ? 'Ocultar detalles' : 'Ver detalles'}
+          </button>
         </label>
 
         <label
-          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${deliveryMethod === 'pickup'
-            ? 'border-purple-500 bg-purple-900/10'
-            : 'border-white/10 bg-black/30 hover:border-white/20'
-            }`}
+          className={`flex flex-col gap-2 p-4 rounded-xl cursor-pointer border transition-all ${
+            deliveryMethod === 'pickup'
+              ? 'border-primary bg-primary/5'
+              : 'border-primary/10 hover:border-primary/40'
+          }`}
         >
           <div className="flex items-center justify-between gap-3">
             <input
@@ -523,41 +512,36 @@ function DeliveryMethodSelector({
               value="pickup"
               checked={deliveryMethod === 'pickup'}
               onChange={(e) => onChangeDeliveryMethod(e.target.value)}
-              className="w-4 h-4 accent-purple-500"
+              className="w-4 h-4 text-primary focus:ring-primary"
             />
-            <p className="font-medium text-white flex-1">Recojo en tienda</p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleInfo('pickup');
-              }}
-              className="w-6 h-6 flex items-center justify-center rounded-full border border-white/20 text-gray-300 hover:bg-white/10"
-              aria-label="Ver detalles de recojo en tienda"
-            >
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M12 3a9 9 0 110 18 9 9 0 010-18z"
-                />
-              </svg>
-            </button>
+            <div className="flex-1">
+              <p className="font-semibold text-surface">Recojo en tienda</p>
+              <p className="text-xs text-surface/60">
+                Pasa por nuestra tienda y recoge tu pedido sin costo adicional.
+              </p>
+            </div>
+            <span className="text-sm font-bold text-surface">
+              {formatPrice(shippingPickup)}
+            </span>
           </div>
           {openInfo === 'pickup' && (
-            <p className="text-xs text-gray-400 leading-relaxed pl-7">
-              Pasa por nuestra tienda y recoge tu pedido sin costo adicional.
+            <p className="text-xs text-surface/60 leading-relaxed pl-7">
+              Te avisaremos cuando tu pedido esté listo para recoger.
             </p>
           )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleInfo('pickup');
+            }}
+            className="self-start mt-1 text-[11px] text-primary hover:underline pl-7"
+          >
+            {openInfo === 'pickup' ? 'Ocultar detalles' : 'Ver detalles'}
+          </button>
         </label>
       </div>
-    </div>
+    </section>
   );
 }
 

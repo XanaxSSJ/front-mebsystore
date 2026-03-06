@@ -1,8 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import Navbar from '@/shared/components/Navbar';
-import Footer from '@/shared/components/Footer';
+import PageLayout from '@/shared/components/PageLayout';
 import { useCategoriesQuery } from '@/features/categories/hooks/useCategoriesQuery';
 
 const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80';
@@ -12,10 +11,7 @@ function ColeccionesPage() {
   const categories = categoriesData ?? [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background-light text-surface selection:bg-primary/20">
-      <Navbar />
-
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-16 md:py-24">
+    <PageLayout className="w-full max-w-7xl mx-auto px-6 py-16 md:py-24">
         <header className="mb-16 md:mb-24 text-center max-w-3xl mx-auto">
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary/60 mb-4 block">
             Curación
@@ -91,10 +87,7 @@ function ColeccionesPage() {
             })}
           </div>
         )}
-      </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
 

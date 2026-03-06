@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Navbar from '@/shared/components/Navbar';
-import Footer from '@/shared/components/Footer';
+import PageLayout from '@/shared/components/PageLayout';
 import ProductCard from '../components/ProductCard';
 import { useSearchStore } from '@/store/search.store';
 import { useProductsQuery } from '../hooks/useProductsQuery';
@@ -60,10 +59,7 @@ function CategoryPage() {
   }, [categoryProducts, searchQuery, sortOrder]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background-light text-surface selection:bg-primary/20">
-      <Navbar />
-
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8">
+    <PageLayout className="w-full max-w-7xl mx-auto px-6 py-8">
         <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
           <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
@@ -155,10 +151,7 @@ function CategoryPage() {
             )}
           </>
         )}
-      </main>
-
-      <Footer />
-    </div>
+    </PageLayout>
   );
 }
 

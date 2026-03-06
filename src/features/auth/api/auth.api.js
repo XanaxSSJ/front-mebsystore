@@ -1,58 +1,35 @@
-import { API_BASE_URL, defaultFetchOptions } from '@/lib/http/client';
+import { fetchAPI } from '@/lib/http/client';
 
 export const authAPI = {
     login: async (email, password) => {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            ...defaultFetchOptions,
+        return await fetchAPI('/auth/login', {
             method: 'POST',
-            body: JSON.stringify({ email, password }),
+            body: { email, password },
+            errorMessage: 'Error al iniciar sesión',
         });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al iniciar sesión' }));
-            throw new Error(error.message || 'Error al iniciar sesión');
-        }
-
-        return await response.json();
     },
 
     register: async (email, password) => {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-            ...defaultFetchOptions,
+        return await fetchAPI('/auth/register', {
             method: 'POST',
-            body: JSON.stringify({ email, password }),
+            body: { email, password },
+            errorMessage: 'Error al registrar usuario',
         });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ message: 'Error al registrar usuario' }));
-            throw new Error(error.message || 'Error al registrar usuario');
-        }
-
-        return await response.json();
     },
 
     logout: async () => {
-        const response = await fetch(`${API_BASE_URL}/auth/logout`, {
-            ...defaultFetchOptions,
+        await fetchAPI('/auth/logout', {
             method: 'POST',
+            errorMessage: 'Error al cerrar sesión',
         });
-
-        if (!response.ok) {
-            throw new Error('Error al cerrar sesión');
-        }
     },
 
     checkAuth: async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/status`, {
-                ...defaultFetchOptions,
-                method: 'GET',
+            const data = await fetchAPI('/auth/status', {
+                errorMessage: 'Error al verificar autenticación',
             });
-            if (response.ok) {
-                const data = await response.json();
-                return Boolean(data.authenticated);
-            }
-            return false;
+            return Boolean(data.authenticated);
         } catch {
             return false;
         }
