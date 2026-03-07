@@ -67,33 +67,21 @@ function ProductDetailPage() {
     return shuffled.slice(0, MAX_RELATED_PRODUCTS);
   }, [productsData, product]);
 
-  useEffect(() => {
-    if (product && product.variants?.length > 0 && attributesData?.attributes) {
-      const firstVariant = product.variants[0];
-      const variantAttrs = Array.isArray(firstVariant.attributes) ? firstVariant.attributes : [];
-      const initialSelections = {};
-      attributesData.attributes.forEach(attr => {
-        const selectedVal = attr.values.find(v =>
-          variantAttrs.some(a => String(a.attributeValueId) === String(v.id))
-        );
-        if (selectedVal) {
-          initialSelections[attr.id] = selectedVal.id;
-        }
-      });
-      setSelectedAttributes(initialSelections);
-    }
-  }, [product, attributesData]);
-
   const activeVariant = useMemo(() => {
     if (!product || !product.variants || product.variants.length === 0) return null;
     const selectedIds = Object.values(selectedAttributes).filter(Boolean);
-    if (selectedIds.length === 0) return product.variants[0] ?? null;
+    const totalRequiredAttributes = attributesData?.attributes?.length || 0;
+    
+    if (totalRequiredAttributes > 0 && selectedIds.length !== totalRequiredAttributes) {
+      return null;
+    }
+
     return product.variants.find(v => {
       const variantIds = Array.isArray(v.attributes) ? v.attributes.map(a => a.attributeValueId) : [];
       return selectedIds.every(valId => variantIds.some(vid => String(vid) === String(valId)))
         && variantIds.length === selectedIds.length;
     }) || null;
-  }, [product, selectedAttributes]);
+  }, [product, selectedAttributes, attributesData]);
 
   const displayPrice = activeVariant ? (activeVariant.price ?? product?.basePrice) : (product?.basePrice ?? product?.price);
   const displayStock = activeVariant ? activeVariant.stock : (product?.variants?.reduce((acc, v) => acc + (v.stock || 0), 0) ?? product?.stock ?? 0);
@@ -114,13 +102,15 @@ function ProductDetailPage() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!product || !activeVariant || displayStock <= 0) return;
+    if (!product || displayStock <= 0) return;
+    const hasVariants = product.variants && product.variants.length > 0;
+    if (hasVariants && !activeVariant) return;
 
     const cartItem = {
-      variantId: activeVariant.id,
+      variantId: activeVariant ? activeVariant.id : product.id,
       productId: product.id,
       productName: product.name,
-      attributes: Array.isArray(activeVariant.attributes)
+      attributes: activeVariant && Array.isArray(activeVariant.attributes)
         ? activeVariant.attributes.map(a => ({ name: a.name, value: a.value }))
         : [],
       price: displayPrice,
@@ -233,6 +223,7 @@ function ProductDetailPage() {
                 onAddToCart={handleAddToCart}
                 displayStock={displayStock}
                 displayPrice={displayPrice}
+                isSelectionIncomplete={attributesData?.attributes?.length > 0 && Object.values(selectedAttributes).filter(Boolean).length !== attributesData.attributes.length}
               />
             </div>
 

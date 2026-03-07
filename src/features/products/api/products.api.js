@@ -1,10 +1,11 @@
 import { fetchAPI } from '@/lib/http/client';
 
 function mapProductResponse(p) {
+    const baseImage = p.images?.find(img => !img.variantId) || p.images?.[0];
     return {
         ...p,
         price: p.basePrice ?? p.variants?.[0]?.price ?? 0,
-        imageUrl: p.images?.[0]?.imageUrl ?? null,
+        imageUrl: baseImage?.imageUrl ?? null,
         stock: p.variants?.reduce((acc, v) => acc + (v.stock || 0), 0) ?? 0,
     };
 }

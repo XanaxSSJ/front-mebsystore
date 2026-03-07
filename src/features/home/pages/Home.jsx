@@ -59,7 +59,7 @@ function Home() {
                 <div className="relative bg-white p-4 rounded-3xl shadow-2xl overflow-hidden">
                   <div className="aspect-[4/5] bg-background-light rounded-2xl overflow-hidden">
                     <img
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw78qG7FFw9BYw30pHtTqHLiIIu1syYf6n4uxR8IF8RdrNvKQ_lsIJyNz2dU51PDecfRJAeubJ2TawjYdA-yVIfvHx6bjg3v6RdEwZoDKqzBUkxXsLCVJNTCyW2ken-0_9IkVmiYUp_qrrbtkdDEASIx3f6zPqKiGpOYM7lSSLUSMuXsV6FcNi3TO1H-vLMvvJe4W0mOGS_EDFBUM5K0ogDMURxtA-LGaeB_2jmFMBSA3vHNhq8x9ry8jELgfBEvx7wIWageE0wC4"
+                      src="https://i.pinimg.com/736x/d3/dd/00/d3dd00cf825bd5fa710191d948ca074a.jpg"
                       alt="Modelo de moda de alta gama con ropa minimalista"
                       className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
                     />
@@ -145,21 +145,21 @@ function Home() {
 
 const CAROUSEL_SLIDES = [
   {
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBw78qG7FFw9BYw30pHtTqHLiIIu1syYf6n4uxR8IF8RdrNvKQ_lsIJyNz2dU51PDecfRJAeubJ2TawjYdA-yVIfvHx6bjg3v6RdEwZoDKqzBUkxXsLCVJNTCyW2ken-0_9IkVmiYUp_qrrbtkdDEASIx3f6zPqKiGpOYM7lSSLUSMuXsV6FcNi3TO1H-vLMvvJe4W0mOGS_EDFBUM5K0ogDMURxtA-LGaeB_2jmFMBSA3vHNhq8x9ry8jELgfBEvx7wIWageE0wC4",
+    img: "https://i.pinimg.com/736x/98/6e/cc/986eccf7e45d4347f06e591b65e6b1f1.jpg",
     alt: "Estilo de vida de moda sostenible",
     overlay: "bg-black/20",
     title: "Vida Diaria Elevada",
     desc: "Descubre nuestro compromiso con la elegancia sostenible y la artesanía atemporal.",
   },
   {
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCZmm2t6UQDicxArVda4tNwrEvXy8kaIPja8Dr4LkuO_C7svtU23UOdTHKCuXKBlEADHbZ1Lt-vN1W3uWtSUF05IZguqxXVmL6me0zmlNIqMBpK9q-0LNw16mFJvRXozC_t_aC2CoDpiLXqGqX6c1TFwg0U7GqreyTSoo8h5sTbjwsJas1ocU_w-7W_vg2rQCYE8qaHg2NBzi41ySykBjCs-SipciKB3nzD7nxRD_AiS9XgU4LbhJscQ4Kj0-QP_EHhWdg2e2TzolI",
+    img: "https://i.pinimg.com/736x/83/58/a7/8358a78e8a19f6976662d392e728fef6.jpg",
     alt: "Ropa minimalista",
     overlay: "bg-black/30",
     title: "Solsticio de Invierno",
     desc: "La paleta de la temporada: Tonos cálidos de tierra y texturas lujosas.",
   },
   {
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBiF2JZEBbenWd2VGAxt8-qREfmVrmeBQD0MN27eSRh8BIleXwC0woTywZoygpvJpjA-SiKmwCM4t5m-7HXHUVv66dElbuMnwR68f614VQA5vkc6OlLu4tJ8pRwXihxnby9LxspfXpMr2dKVjVlM0hIFpU7RtDin2SUeBvSlMLrxNrzRnYAWZxnhfQaJ6p2eMD64LWEMVpaM2B8YdWdkcAhY_DwIdLREny5p22etVqy5Mn4kaT_ij2F1nVtyhQINHhDOuVfGz2IGpg",
+    img: "https://i.pinimg.com/736x/30/cb/24/30cb24bac14870beed5ff2cbf8322993.jpg",
     alt: "Ropa exterior premium",
     overlay: "bg-black/25",
     title: "Lujo Consciente",

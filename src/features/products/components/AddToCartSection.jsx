@@ -1,9 +1,12 @@
-function AddToCartSection({ quantity, setQuantity, onAddToCart, displayStock, displayPrice }) {
+function AddToCartSection({ quantity, setQuantity, onAddToCart, displayStock, displayPrice, isSelectionIncomplete }) {
   const stockLabel = (() => {
     if (displayStock <= 0) return 'Agotado';
     if (displayStock === 1) return 'Solo queda 1 unidad';
     return `${displayStock} unidades disponibles`;
   })();
+
+  const btnText = displayStock <= 0 ? 'Agotado' : (isSelectionIncomplete ? 'Selecciona Opciones' : 'Agregar al carrito');
+  const btnDisabled = displayStock <= 0 || isSelectionIncomplete;
 
   return (
     <>
@@ -14,7 +17,7 @@ function AddToCartSection({ quantity, setQuantity, onAddToCart, displayStock, di
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               className="p-2 hover:text-primary transition-colors disabled:opacity-50 text-surface"
-              disabled={displayStock <= 0}
+              disabled={btnDisabled}
             >
               <span className="material-symbols-outlined">remove</span>
             </button>
@@ -22,7 +25,7 @@ function AddToCartSection({ quantity, setQuantity, onAddToCart, displayStock, di
             <button
               onClick={() => setQuantity(Math.min(displayStock, quantity + 1))}
               className="p-2 hover:text-primary transition-colors disabled:opacity-50 text-surface"
-              disabled={displayStock <= 0}
+              disabled={btnDisabled}
             >
               <span className="material-symbols-outlined">add</span>
             </button>
@@ -31,14 +34,14 @@ function AddToCartSection({ quantity, setQuantity, onAddToCart, displayStock, di
 
         <button
           onClick={onAddToCart}
-          disabled={displayStock <= 0}
-          className={`flex-grow font-bold h-14 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all transform hover:scale-[1.02] ${displayStock > 0
+          disabled={btnDisabled}
+          className={`flex-grow font-bold h-14 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all transform hover:scale-[1.02] ${!btnDisabled
             ? 'bg-primary hover:bg-primary/90 text-white shadow-primary/20'
             : 'bg-surface/10 text-surface/50 cursor-not-allowed shadow-none hover:scale-100'
             }`}
         >
           <span className="material-symbols-outlined">shopping_cart</span>
-          {displayStock > 0 ? 'Agregar al carrito' : 'Agotado'}
+          {btnText}
         </button>
       </div>
 

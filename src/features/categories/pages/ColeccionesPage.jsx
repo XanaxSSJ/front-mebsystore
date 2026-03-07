@@ -4,7 +4,7 @@ import Link from 'next/link';
 import PageLayout from '@/shared/components/PageLayout';
 import { useCategoriesQuery } from '@/features/categories/hooks/useCategoriesQuery';
 
-const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80';
+const PLACEHOLDER_IMAGE = 'https://i.pinimg.com/736x/64/82/61/6482615e57094dd3fbbcc2c0c76546de.jpg';
 
 function ColeccionesPage() {
   const { data: categoriesData, isLoading, error } = useCategoriesQuery();

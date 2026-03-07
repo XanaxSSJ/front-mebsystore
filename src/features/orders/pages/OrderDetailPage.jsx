@@ -7,6 +7,7 @@ import { useOrderByIdQuery } from '../hooks/useOrderByIdQuery';
 import { getStatusDisplay, getStatusMessage } from '@/features/orders/utils/status';
 import { ensureHttps } from '@/lib/url';
 import { formatPrice, formatDateTime, formatDateLong } from '@/lib/format';
+import OrderProductItem from '@/features/orders/components/OrderProductItem';
 
 const EMPTY_ARRAY = [];
 
@@ -213,57 +214,14 @@ function OrderInfoCard({ order, products, onViewProduct, onCompletePayment, onBu
           {order.items.map((item) => {
             const product = products[item.productId];
             return (
-              <div
-                key={item.id}
-                className="flex flex-col sm:flex-row gap-4 sm:gap-6 pb-6 border-b border-surface/5 last:border-0 last:pb-0"
-              >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-background-light rounded-xl flex items-center justify-center flex-shrink-0 border border-surface/10 overflow-hidden">
-                  {product?.imageUrl ? (
-                    <img
-                      src={ensureHttps(product.imageUrl)}
-                      alt={item.productName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="material-symbols-outlined text-4xl text-surface/40">
-                      inventory_2
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-surface mb-1 text-base sm:text-lg break-words">
-                        {item.productName}
-                      </h4>
-                      <p className="text-sm text-surface/60 mb-2 leading-relaxed line-clamp-2">
-                        {product?.description || 'Producto de calidad premium'}
-                      </p>
-                      <p className="text-sm text-surface/40">Cantidad: {item.quantity}</p>
-                    </div>
-                    <div className="text-left sm:text-right flex-shrink-0">
-                      <p className="text-lg font-semibold text-surface">
-                        {formatPrice(item.unitPrice)}
-                      </p>
-                      {item.quantity > 1 && (
-                        <p className="text-sm text-surface/40 mt-1">
-                          Subtotal: {formatPrice(item.subtotal)}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4 mt-2">
-                    <button
-                      onClick={() => onViewProduct(item.productId)}
-                      className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-                    >
-                      Ver producto
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <OrderProductItem
+                 key={item.id}
+                 item={item}
+                 product={product}
+                 onViewProduct={(productId) => onViewProduct(productId)}
+                 showReorder={false}
+                 showSubtotal={true}
+              />
             );
           })}
         </div>

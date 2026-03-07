@@ -6,8 +6,8 @@ import { useCartStore } from '@/store/cart.store';
 import { useProductsQuery } from '@/features/products/hooks/useProductsQuery';
 import { useMyOrdersQuery } from '../hooks/useMyOrdersQuery';
 import { getStatusColor, getStatusText } from '@/features/orders/utils/status';
-import { ensureHttps } from '@/lib/url';
-import { formatPrice, formatDateShort } from '@/lib/format';
+import { formatDateShort, formatPrice } from '@/lib/format';
+import OrderProductItem from '@/features/orders/components/OrderProductItem';
 
 const EMPTY_ARRAY = [];
 
@@ -55,16 +55,7 @@ function OrdersPage() {
     return [...ordersDataSafe].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [ordersDataSafe]);
 
-  const handleBuyAgain = (orderItems) => {
-    orderItems.forEach((item) => {
-      const product = products[item.productId];
-      if (product) {
-        for (let i = 0; i < item.quantity; i++) {
-          addToCart(product);
-        }
-      }
-    });
-  };
+
 
   if (loading) {
     return (
@@ -144,61 +135,14 @@ function OrdersPage() {
                     {order.items.map((item) => {
                       const product = products[item.productId];
                       return (
-                        <div
+                        <OrderProductItem
                           key={item.id}
-                          className="flex flex-col sm:flex-row gap-4 sm:gap-6"
-                        >
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-background-light rounded-xl flex items-center justify-center flex-shrink-0 border border-surface/10 overflow-hidden">
-                            {product?.imageUrl ? (
-                              <img
-                                src={ensureHttps(product.imageUrl)}
-                                alt={item.productName}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <span className="material-symbols-outlined text-3xl text-surface/40">image</span>
-                            )}
-                          </div>
-
-                          <div className="flex-1 min-w-0 py-1">
-                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-surface mb-1 text-base sm:text-lg break-words">
-                                  {item.productName}
-                                </h4>
-                                <p className="text-sm text-surface/60 mb-2 leading-relaxed line-clamp-2">
-                                  {product?.description || 'Producto de calidad premium'}
-                                </p>
-                              </div>
-                              <div className="text-left sm:text-right flex-shrink-0">
-                                <p className="text-base font-semibold text-surface">
-                                  {formatPrice(item.unitPrice)}
-                                </p>
-                                {item.quantity > 1 && (
-                                  <p className="text-sm text-surface/40 mt-1">
-                                    Cant.: {item.quantity}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="flex gap-3 mt-4">
-                              <button
-                                onClick={() => handleBuyAgain([item])}
-                                className="text-sm font-medium text-surface/60 hover:text-surface transition-colors"
-                              >
-                                Comprar de nuevo
-                              </button>
-                              <span className="text-surface/40">|</span>
-                              <button
-                                onClick={() => router.push(`/producto/${item.productId}`)}
-                                className="text-sm font-medium text-surface/60 hover:text-surface transition-colors"
-                              >
-                                Ver producto
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                          item={item}
+                          product={product}
+                          onViewProduct={(productId) => router.push(`/producto/${productId}`)}
+                          showReorder={true}
+                          showSubtotal={false}
+                        />
                       );
                     })}
                   </div>
