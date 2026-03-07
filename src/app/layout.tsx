@@ -14,7 +14,7 @@ const manrope = Manrope({
 
 export const metadata = {
   title: "Mebsystore",
-  description: "Tu tienda online de productos informaticos y componentes",
+  description: "Tienda online de ropa moderna y exclusiva al mejor precio",
   keywords: "tienda, ecommerce, productos, Mebsystore",
   authors: [{ name: "Mebsystore" }],
   icons: {
@@ -24,7 +24,7 @@ export const metadata = {
   },
   openGraph: {
     title: "Mebsystore",
-    description: "Tu tienda online de productos informaticos y componentes",
+    description: "Tienda online de ropa moderna y exclusiva al mejor precio",
     url: "https://www.mebsy.store",
     siteName: "Mebsystore",
     images: ["/og-image.webp"],
@@ -34,7 +34,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Mebsystore",
-    description: "Tu tienda online de productos informaticos y componentes",
+    description: "Tienda online de ropa moderna y exclusiva al mejor precio",
     images: ["/og-image.webp"],
   },
 };

@@ -12,6 +12,7 @@ const COLOR_HEX = {
   onyx: '#15173D', purple: '#982598', olive: '#556B2F',
   rosado: '#F472B6', pink: '#F472B6',
   celeste: '#38BDF8', cyan: '#06B6D4',
+  morado: '#982598',
 };
 
 export function getColorHex(value) {

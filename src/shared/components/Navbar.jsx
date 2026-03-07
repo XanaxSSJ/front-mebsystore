@@ -66,7 +66,7 @@ function Navbar() {
                     <div className="bg-primary p-1.5 rounded-lg text-white">
                         <span className="material-symbols-outlined text-2xl">diamond</span>
                     </div>
-                    <span className="text-2xl font-extrabold tracking-tighter text-surface uppercase">Mebsy</span>
+                    <span className="text-2xl font-extrabold tracking-tighter text-surface uppercase">Mebsy Store</span>
                 </Link>
 
                 {/* Navigation Links: Tienda (all products), Colecciones (categories), Sobre Nosotros */}
