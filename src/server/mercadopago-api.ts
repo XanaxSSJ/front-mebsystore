@@ -44,16 +44,23 @@ export async function mpCreatePreference(params: {
   return { initPoint: data.init_point, id: data.id };
 }
 
+/** IDs válidos en GET /v1/payments/{id} son numéricos (no UUID de orden). */
+export function isMercadoPagoPaymentId(id: string): boolean {
+  return /^\d+$/.test(id.trim());
+}
+
 export async function mpGetPayment(paymentId: string): Promise<{
   status: string | null;
   external_reference: string | null;
-}> {
+} | null> {
   const token = process.env.MERCADOPAGO_ACCESS_TOKEN;
   if (!token) throw new Error("MERCADOPAGO_ACCESS_TOKEN not configured");
 
   const res = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (res.status === 404) return null;
 
   if (!res.ok) {
     const t = await res.text();

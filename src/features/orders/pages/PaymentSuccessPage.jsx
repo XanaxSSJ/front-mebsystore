@@ -2,6 +2,20 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PageLayout from '@/shared/components/PageLayout';
 
+/**
+ * Checkout Pro suele enviar status/collection_status distintos (p.ej. approved, rejected).
+ * Unifica a success | pending | failure para UI y para query de detalle de orden.
+ */
+function normalizeMercadoPagoReturnStatus(params) {
+  const raw = params.get('status') || params.get('collection_status');
+  if (!raw) return null;
+  const s = String(raw).toLowerCase();
+  if (s === 'success' || s === 'approved' || s === 'accredited') return 'success';
+  if (s === 'pending' || s === 'in_process' || s === 'in_mediation') return 'pending';
+  if (s === 'failure' || s === 'rejected' || s === 'cancelled') return 'failure';
+  return null;
+}
+
 function PaymentSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -9,25 +23,30 @@ function PaymentSuccessPage() {
   const [paymentStatus, setPaymentStatus] = useState(null);
 
   useEffect(() => {
-    const status = searchParams.get('status');
-    const orderId = searchParams.get('orderId');
+    const orderId =
+      searchParams.get('orderId') || searchParams.get('external_reference');
     const paymentId = searchParams.get('payment_id');
     const preferenceId = searchParams.get('preference_id');
+    const normalized = normalizeMercadoPagoReturnStatus(searchParams);
 
-    if (orderId && status) {
-      router.replace(`/orden/${orderId}?status=${status}`);
+    if (orderId && normalized) {
+      const qs = new URLSearchParams();
+      qs.set('status', normalized);
+      if (paymentId) qs.set('payment_id', paymentId);
+      if (preferenceId) qs.set('preference_id', preferenceId);
+      router.replace(`/orden/${orderId}?${qs.toString()}`);
       return;
     }
 
-    if (!status) {
+    if (!normalized) {
       router.push('/ordenes');
       return;
     }
 
-    setPaymentStatus(status);
+    setPaymentStatus(normalized);
     setLoading(false);
 
-    if (status === 'pending') {
+    if (normalized === 'pending') {
       console.log('Payment pending, waiting for webhook confirmation');
     }
 
@@ -166,4 +185,3 @@ function PaymentSuccessPage() {
 }
 
 export default PaymentSuccessPage;
-

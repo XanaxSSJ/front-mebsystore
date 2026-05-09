@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
-import { mpCreatePreference, mpGetPayment } from "@/server/mercadopago-api";
+import { isMercadoPagoPaymentId, mpCreatePreference, mpGetPayment } from "@/server/mercadopago-api";
 import { validateUbigeo } from "@/server/location-service";
 
 const ORDER_INCLUDE = { items: true } as const;
@@ -261,8 +261,19 @@ function mapPaymentToOrderStatus(paymentStatus: string | null): string {
 }
 
 export async function processPaymentWebhook(paymentId: string): Promise<string | null> {
-  const payment = await mpGetPayment(paymentId);
-  const ext = payment.external_reference;
+  const trimmedId = paymentId.trim();
+  if (!isMercadoPagoPaymentId(trimmedId)) {
+    console.warn("[webhook] ID ignorado (no es payment id numérico):", paymentId);
+    return null;
+  }
+
+  const payment = await mpGetPayment(trimmedId);
+  if (!payment) {
+    console.warn("[webhook] Pago no encontrado en MP:", trimmedId);
+    return null;
+  }
+
+  const ext = payment.external_reference?.trim();
   if (!ext) return null;
   const orderId = ext;
 
@@ -284,6 +295,47 @@ export async function markOrderPaidIfPending(orderId: string) {
   if (order && order.status === "PENDING_PAYMENT") {
     await prisma.order.update({ where: { id: orderId }, data: { status: "PAID" } });
   }
+}
+
+/**
+ * Equivalente a ExpireOrdersUseCase + OrderExpirationScheduler en Spring:
+ * órdenes PENDING_PAYMENT con expiresAt pasado → CANCELLED y stock devuelto por ítem.
+ */
+export async function expirePendingPaymentOrders(): Promise<number> {
+  const now = new Date();
+  const expiredOrders = await prisma.order.findMany({
+    where: {
+      status: "PENDING_PAYMENT",
+      expiresAt: { lt: now },
+    },
+    include: { items: true },
+  });
+
+  let expiredCount = 0;
+  for (const order of expiredOrders) {
+    try {
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({
+          where: { id: order.id },
+          data: { status: "CANCELLED" },
+        });
+        for (const item of order.items) {
+          const variant = await tx.productVariant.findUnique({
+            where: { id: item.variantId },
+          });
+          if (!variant) continue;
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { increment: item.quantity } },
+          });
+        }
+      });
+      expiredCount += 1;
+    } catch (e) {
+      console.error("[expirePendingPaymentOrders] order", order.id, e);
+    }
+  }
+  return expiredCount;
 }
 
 export async function listAllOrdersAdmin() {
