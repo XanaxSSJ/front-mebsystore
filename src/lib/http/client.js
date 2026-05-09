@@ -1,26 +1,50 @@
 function getApiBaseUrl() {
-  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (typeof window !== 'undefined' && window.location?.protocol === 'https:' && url.startsWith('http://')) {
-    return url.replace(/^http:\/\//i, 'https://');
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+  if (
+    typeof window !== "undefined" &&
+    window.location?.protocol === "https:" &&
+    url.startsWith("http://")
+  ) {
+    return url.replace(/^http:\/\//i, "https://");
   }
   return url;
 }
 
+/** Base URL externa opcional (p. ej. backend legacy). Vacío = mismas rutas `/api/*` en Next.js. */
 export const API_BASE_URL = getApiBaseUrl();
 
 export const defaultFetchOptions = {
-  credentials: 'include',
+  credentials: "include",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 };
 
+function buildRequestUrl(endpoint) {
+  if (endpoint.startsWith("http")) return endpoint;
+  const normalized = endpoint.startsWith("/api/")
+    ? endpoint
+    : endpoint.startsWith("/")
+      ? `/api${endpoint}`
+      : `/api/${endpoint}`;
+
+  const base = getApiBaseUrl().replace(/\/$/, "");
+  if (!base) return normalized;
+  if (base.endsWith("/api")) {
+    const suffix = normalized.replace(/^\/api/, "") || "/";
+    return base + (suffix.startsWith("/") ? suffix : `/${suffix}`);
+  }
+  return base + normalized;
+}
+
 /**
  * Centralized fetch wrapper with automatic JSON parsing and error handling.
- * Replaces the boilerplate `fetch + !ok + json()` pattern across all API files.
  */
-export async function fetchAPI(endpoint, { method = 'GET', body, errorMessage = 'Error en la solicitud' } = {}) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+export async function fetchAPI(
+  endpoint,
+  { method = "GET", body, errorMessage = "Error en la solicitud" } = {},
+) {
+  const url = buildRequestUrl(endpoint);
 
   const response = await fetch(url, {
     ...defaultFetchOptions,
@@ -40,5 +64,5 @@ export async function fetchAPI(endpoint, { method = 'GET', body, errorMessage = 
 
 /** @deprecated Use fetchAPI instead */
 export const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
+  "Content-Type": "application/json",
 });

@@ -44,7 +44,13 @@ export const productAPI = {
     },
 
     getById: async (productId) => {
-        const allProducts = await productAPI.getAll();
-        return allProducts.find((product) => String(product.id) === String(productId)) || null;
+        try {
+            const p = await fetchAPI(`/products/${productId}`, {
+                errorMessage: 'Error al obtener producto',
+            });
+            return mapProductResponse(p);
+        } catch {
+            return null;
+        }
     },
 };
