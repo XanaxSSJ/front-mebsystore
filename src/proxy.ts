@@ -8,15 +8,23 @@ function allowedOrigins(): string[] {
     .filter(Boolean);
 }
 
+const DEFAULT_ALLOW_HEADERS =
+  "Content-Type, Authorization, Accept, Origin, X-Requested-With";
+
 function corsHeaders(request: NextRequest): HeadersInit {
   const origin = request.headers.get("origin") ?? "";
   const allow = allowedOrigins();
   const allowOrigin =
     allow.length === 0 ? "*" : allow.includes(origin) ? origin : allow[0] ?? "*";
+
+  const requested = request.headers.get("access-control-request-headers");
+  const allowHeaders = requested?.trim() ? requested : DEFAULT_ALLOW_HEADERS;
+
   const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Allow-Headers": allowHeaders,
+    "Access-Control-Max-Age": "86400",
   };
   if (allowOrigin !== "*") {
     headers["Access-Control-Allow-Credentials"] = "true";
@@ -24,11 +32,7 @@ function corsHeaders(request: NextRequest): HeadersInit {
   return headers;
 }
 
-export function middleware(request: NextRequest) {
-  if (!request.nextUrl.pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
-
+export function proxy(request: NextRequest) {
   if (request.method === "OPTIONS") {
     return new NextResponse(null, { status: 204, headers: corsHeaders(request) });
   }
