@@ -163,6 +163,9 @@ export async function createOrder(
 }
 
 export async function listMyOrders(email: string) {
+  await expirePendingPaymentOrders().catch((e) =>
+    console.error("[listMyOrders] expirePendingPaymentOrders", e),
+  );
   const userId = await requireUserId(email);
   const orders = await prisma.order.findMany({
     where: { userId },
@@ -173,6 +176,9 @@ export async function listMyOrders(email: string) {
 }
 
 export async function getOrderById(email: string, orderId: string) {
+  await expirePendingPaymentOrders().catch((e) =>
+    console.error("[getOrderById] expirePendingPaymentOrders", e),
+  );
   const userId = await requireUserId(email);
   const order = await prisma.order.findUnique({
     where: { id: orderId },
@@ -256,8 +262,38 @@ function mapPaymentToOrderStatus(paymentStatus: string | null): string {
   if (s === "approved") return "PAID";
   if (s === "pending" || s === "in_process" || s === "in_mediation") return "PENDING_PAYMENT";
   if (s === "rejected" || s === "cancelled") return "CANCELLED";
-  if (s === "refunded" || s === "charged_back") return "CANCELLED";
+  if (s === "refunded" || s === "charged_back") return "REFUNDED";
   return "PENDING_PAYMENT";
+}
+
+type OrderItemDelegate = {
+  findMany: (args: { where: { orderId: string } }) => Promise<{ variantId: string; quantity: number }[]>;
+};
+type VariantDelegate = {
+  findUnique: (args: { where: { id: string } }) => Promise<{ id: string } | null>;
+  update: (args: {
+    where: { id: string };
+    data: { stock: { increment: number } };
+  }) => Promise<unknown>;
+};
+
+/**
+ * Devuelve unidades al inventario al cancelar o reembolsar una orden.
+ * Llamar solo al pasar a CANCELLED/REFUNDED desde un estado que aún no haya liberado stock (evita doble suma).
+ */
+async function releaseStockForOrderItems(
+  tx: { orderItem: OrderItemDelegate; productVariant: VariantDelegate },
+  orderId: string,
+): Promise<void> {
+  const items = await tx.orderItem.findMany({ where: { orderId } });
+  for (const item of items) {
+    const variant = await tx.productVariant.findUnique({ where: { id: item.variantId } });
+    if (!variant) continue;
+    await tx.productVariant.update({
+      where: { id: item.variantId },
+      data: { stock: { increment: item.quantity } },
+    });
+  }
 }
 
 export async function processPaymentWebhook(paymentId: string): Promise<string | null> {
@@ -281,12 +317,24 @@ export async function processPaymentWebhook(paymentId: string): Promise<string |
   if (!order) return null;
 
   const newStatus = mapPaymentToOrderStatus(payment.status);
-  if (order.status !== newStatus) {
-    await prisma.order.update({
+  if (order.status === newStatus) {
+    return newStatus;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
       where: { id: orderId },
       data: { status: newStatus },
     });
-  }
+    const releasesInventory =
+      (newStatus === "CANCELLED" || newStatus === "REFUNDED") &&
+      order.status !== "CANCELLED" &&
+      order.status !== "REFUNDED";
+    if (releasesInventory) {
+      await releaseStockForOrderItems(tx, orderId);
+    }
+  });
+
   return newStatus;
 }
 
@@ -297,16 +345,19 @@ export async function markOrderPaidIfPending(orderId: string) {
   }
 }
 
-/**
- * Equivalente a ExpireOrdersUseCase + OrderExpirationScheduler en Spring:
- * órdenes PENDING_PAYMENT con expiresAt pasado → CANCELLED y stock devuelto por ítem.
- */
+const PAYMENT_HOLD_MS = 15 * 60 * 1000;
+
 export async function expirePendingPaymentOrders(): Promise<number> {
   const now = new Date();
+  const cutoffLegacy = new Date(now.getTime() - PAYMENT_HOLD_MS);
+
   const expiredOrders = await prisma.order.findMany({
     where: {
       status: "PENDING_PAYMENT",
-      expiresAt: { lt: now },
+      OR: [
+        { expiresAt: { lt: now } },
+        { expiresAt: null, createdAt: { lt: cutoffLegacy } },
+      ],
     },
     include: { items: true },
   });
@@ -319,16 +370,7 @@ export async function expirePendingPaymentOrders(): Promise<number> {
           where: { id: order.id },
           data: { status: "CANCELLED" },
         });
-        for (const item of order.items) {
-          const variant = await tx.productVariant.findUnique({
-            where: { id: item.variantId },
-          });
-          if (!variant) continue;
-          await tx.productVariant.update({
-            where: { id: item.variantId },
-            data: { stock: { increment: item.quantity } },
-          });
-        }
+        await releaseStockForOrderItems(tx, order.id);
       });
       expiredCount += 1;
     } catch (e) {
@@ -339,6 +381,9 @@ export async function expirePendingPaymentOrders(): Promise<number> {
 }
 
 export async function listAllOrdersAdmin() {
+  await expirePendingPaymentOrders().catch((e) =>
+    console.error("[listAllOrdersAdmin] expirePendingPaymentOrders", e),
+  );
   const orders = await prisma.order.findMany({
     include: ORDER_INCLUDE,
     orderBy: { createdAt: "desc" },
@@ -347,14 +392,25 @@ export async function listAllOrdersAdmin() {
 }
 
 export async function patchOrderStatusAdmin(orderId: string, status: string) {
-  const allowed = ["PENDING_PAYMENT", "PAID", "SHIPPED", "CANCELLED"];
+  const allowed = ["PENDING_PAYMENT", "PAID", "SHIPPED", "CANCELLED", "REFUNDED"];
   if (!allowed.includes(status)) throw new Error("Invalid status: " + status);
   const existing = await prisma.order.findUnique({ where: { id: orderId } });
   if (!existing) throw new Error("Order not found");
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status },
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status },
+    });
+    const releasesInventory =
+      (status === "CANCELLED" || status === "REFUNDED") &&
+      existing.status !== "CANCELLED" &&
+      existing.status !== "REFUNDED";
+    if (releasesInventory) {
+      await releaseStockForOrderItems(tx, orderId);
+    }
   });
+
   const o = await prisma.order.findUniqueOrThrow({
     where: { id: orderId },
     include: ORDER_INCLUDE,
