@@ -322,14 +322,20 @@ export async function processPaymentWebhook(paymentId: string): Promise<string |
   }
 
   await prisma.$transaction(async (tx) => {
-    await tx.order.update({
-      where: { id: orderId },
-      data: { status: newStatus },
-    });
+    const cur = await tx.order.findUnique({ where: { id: orderId } });
+    if (!cur || cur.status === newStatus) return;
+
     const releasesInventory =
       (newStatus === "CANCELLED" || newStatus === "REFUNDED") &&
-      order.status !== "CANCELLED" &&
-      order.status !== "REFUNDED";
+      cur.status !== "CANCELLED" &&
+      cur.status !== "REFUNDED";
+
+    const upd = await tx.order.updateMany({
+      where: { id: orderId, status: cur.status },
+      data: { status: newStatus },
+    });
+    if (upd.count === 0) return;
+
     if (releasesInventory) {
       await releaseStockForOrderItems(tx, orderId);
     }
@@ -339,10 +345,10 @@ export async function processPaymentWebhook(paymentId: string): Promise<string |
 }
 
 export async function markOrderPaidIfPending(orderId: string) {
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
-  if (order && order.status === "PENDING_PAYMENT") {
-    await prisma.order.update({ where: { id: orderId }, data: { status: "PAID" } });
-  }
+  await prisma.order.updateMany({
+    where: { id: orderId, status: "PENDING_PAYMENT" },
+    data: { status: "PAID" },
+  });
 }
 
 const PAYMENT_HOLD_MS = 15 * 60 * 1000;
@@ -365,14 +371,24 @@ export async function expirePendingPaymentOrders(): Promise<number> {
   let expiredCount = 0;
   for (const order of expiredOrders) {
     try {
+      let cancelledThisPass = false;
       await prisma.$transaction(async (tx) => {
-        await tx.order.update({
-          where: { id: order.id },
+        const upd = await tx.order.updateMany({
+          where: {
+            id: order.id,
+            status: "PENDING_PAYMENT",
+            OR: [
+              { expiresAt: { lt: now } },
+              { expiresAt: null, createdAt: { lt: cutoffLegacy } },
+            ],
+          },
           data: { status: "CANCELLED" },
         });
+        if (upd.count === 0) return;
         await releaseStockForOrderItems(tx, order.id);
+        cancelledThisPass = true;
       });
-      expiredCount += 1;
+      if (cancelledThisPass) expiredCount += 1;
     } catch (e) {
       console.error("[expirePendingPaymentOrders] order", order.id, e);
     }
@@ -398,14 +414,19 @@ export async function patchOrderStatusAdmin(orderId: string, status: string) {
   if (!existing) throw new Error("Order not found");
 
   await prisma.$transaction(async (tx) => {
-    await tx.order.update({
-      where: { id: orderId },
-      data: { status },
-    });
     const releasesInventory =
       (status === "CANCELLED" || status === "REFUNDED") &&
       existing.status !== "CANCELLED" &&
       existing.status !== "REFUNDED";
+
+    const upd = await tx.order.updateMany({
+      where: { id: orderId, status: existing.status },
+      data: { status },
+    });
+    if (upd.count === 0) {
+      throw new Error("ORDER_CONFLICT");
+    }
+
     if (releasesInventory) {
       await releaseStockForOrderItems(tx, orderId);
     }

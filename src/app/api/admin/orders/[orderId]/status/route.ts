@@ -21,6 +21,12 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ orderId: stri
     if (msg.includes("Invalid status")) {
       return NextResponse.json({ error: msg }, { status: 400 });
     }
+    if (msg === "ORDER_CONFLICT") {
+      return NextResponse.json(
+        { error: "La orden cambió mientras se actualizaba. Recarga e intenta de nuevo." },
+        { status: 409 },
+      );
+    }
     console.error(e);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
