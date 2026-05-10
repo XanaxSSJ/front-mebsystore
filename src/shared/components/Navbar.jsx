@@ -127,22 +127,24 @@ function Navbar() {
 
                     <div className="h-6 w-[1px] bg-surface/10 mx-2 hidden md:block"></div>
 
-                    {/* Auth */}
+                    {/* Auth: ancho mínimo en desktop para evitar CLS al resolver sesión */}
+                    <div className="flex min-w-0 items-center justify-end md:min-w-[152px]">
                     {isCheckingAuth ? (
-                        <div className="w-8 h-8 rounded-full bg-surface/10 animate-pulse hidden md:block"></div>
+                        <div className="hidden h-9 w-[152px] rounded-lg bg-surface/10 animate-pulse md:block" aria-hidden />
                     ) : isAuthenticated ? (
                         <div className="relative">
-                            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="p-2 hover:bg-white/50 rounded-full transition-all border border-transparent flex items-center">
+                            <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center rounded-full border border-transparent p-2 transition-all hover:bg-white/50">
                                 <span className="material-symbols-outlined text-surface">person</span>
                             </button>
                             <ProfileDropdown isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} userEmail={userEmail} />
                         </div>
                     ) : (
-                        <Link href="/login" className="hidden md:flex items-center gap-2 bg-surface text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-surface/90 transition-all">
+                        <Link href="/login" className="hidden items-center gap-2 rounded-lg bg-surface px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-surface/90 md:flex">
                             <span className="material-symbols-outlined text-sm">person</span>
                             Ingresar
                         </Link>
                     )}
+                    </div>
                 </div>
             </div>
         </nav>

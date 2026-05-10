@@ -9,6 +9,7 @@ import { useAddressesQuery } from '@/features/user/hooks/useAddressesQuery';
 import { useOrderByIdQuery } from '@/features/orders/hooks/useOrderByIdQuery';
 import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
+import { CheckoutPageSkeleton } from '@/shared/components/page-skeletons';
 
 const EMPTY_ARRAY = [];
 
@@ -139,11 +140,7 @@ function CheckoutPage() {
   };
 
   if (loading) {
-    return (
-      <PageLayout className="flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </PageLayout>
-    );
+    return <CheckoutPageSkeleton />;
   }
 
   if (cartItems.length === 0) {

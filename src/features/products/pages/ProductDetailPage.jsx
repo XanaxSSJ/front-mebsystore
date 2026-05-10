@@ -15,6 +15,7 @@ import ProductAttributes from '../components/ProductAttributes';
 import AddToCartSection from '../components/AddToCartSection';
 import ProductInfoTabs from '../components/ProductInfoTabs';
 import RelatedProducts from '../components/RelatedProducts';
+import { ProductDetailSkeleton } from '@/shared/components/page-skeletons';
 
 const MAX_RELATED_PRODUCTS = 4;
 
@@ -126,11 +127,7 @@ function ProductDetailPage() {
     setSelectedAttributes(prev => ({ ...prev, [attrId]: valId }));
   };
 
-  if (loading) return (
-    <PageLayout className="flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-    </PageLayout>
-  );
+  if (loading) return <ProductDetailSkeleton />;
 
   if (!product && !loading && !error) {
     return (

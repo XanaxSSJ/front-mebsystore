@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html:not(.material-symbols-ready) .material-symbols-outlined {
+  visibility: hidden;
+}
+
 @theme {
   --color-primary: #982598;
   --color-accent: #E491C9;

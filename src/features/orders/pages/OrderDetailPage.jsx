@@ -8,6 +8,7 @@ import { getStatusDisplay, getStatusMessage } from '@/features/orders/utils/stat
 import { ensureHttps } from '@/lib/url';
 import { formatPrice, formatDateTime, formatDateLong } from '@/lib/format';
 import OrderProductItem from '@/features/orders/components/OrderProductItem';
+import { OrderDetailSkeleton } from '@/shared/components/page-skeletons';
 
 const EMPTY_ARRAY = [];
 
@@ -77,16 +78,7 @@ function OrderDetailPage() {
   };
 
   if (loading) {
-    return (
-      <PageLayout className="w-full">
-        <div className="flex-1 flex items-center justify-center pt-24 pb-20">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-surface/60 animate-pulse">Cargando detalles de la orden...</p>
-          </div>
-        </div>
-      </PageLayout>
-    );
+    return <OrderDetailSkeleton />;
   }
 
   if (!order) {

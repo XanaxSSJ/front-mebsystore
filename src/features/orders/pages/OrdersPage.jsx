@@ -8,6 +8,7 @@ import { useMyOrdersQuery } from '../hooks/useMyOrdersQuery';
 import { getStatusColor, getStatusText } from '@/features/orders/utils/status';
 import { formatDateShort, formatPrice } from '@/lib/format';
 import OrderProductItem from '@/features/orders/components/OrderProductItem';
+import { OrdersPageSkeleton } from '@/shared/components/page-skeletons';
 
 const EMPTY_ARRAY = [];
 
@@ -58,16 +59,7 @@ function OrdersPage() {
 
 
   if (loading) {
-    return (
-      <PageLayout className="w-full">
-        <div className="flex-1 flex items-center justify-center pt-24 pb-20">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-surface/60 animate-pulse">Cargando órdenes...</p>
-          </div>
-        </div>
-      </PageLayout>
-    );
+    return <OrdersPageSkeleton />;
   }
 
   return (

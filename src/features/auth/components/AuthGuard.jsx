@@ -3,14 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStatusQuery } from "@/features/auth/hooks/useAuthStatusQuery";
-
-function FullPageSpinner() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
-}
+import { AuthGuardLoadingView } from "@/shared/components/page-skeletons";
 
 function AuthGuard({ children }) {
   const router = useRouter();
@@ -30,7 +23,7 @@ function AuthGuard({ children }) {
     router.replace(`/login?redirect=${redirect}`);
   }, [shouldRedirect, redirectPath, router]);
 
-  if (isLoading) return <FullPageSpinner />;
+  if (isLoading) return <AuthGuardLoadingView />;
 
   if (shouldRedirect) return null;
 
