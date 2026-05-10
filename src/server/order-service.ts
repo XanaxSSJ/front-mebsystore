@@ -48,10 +48,45 @@ async function requireUserId(email: string): Promise<string> {
   return u.id;
 }
 
+function buildLineKey(productId: string, variantId: string) {
+  return `${productId}::${variantId}`;
+}
+
+function aggregateRequestedLines(items: { productId: string; variantId: string; quantity: number }[]) {
+  const map = new Map<string, number>();
+  for (const item of items) {
+    const key = buildLineKey(item.productId, item.variantId);
+    map.set(key, (map.get(key) ?? 0) + item.quantity);
+  }
+  return map;
+}
+
+function aggregateOrderLines(
+  orderItems: { productId: string; variantId: string; quantity: number }[],
+) {
+  const map = new Map<string, number>();
+  for (const item of orderItems) {
+    const key = buildLineKey(item.productId, item.variantId);
+    map.set(key, (map.get(key) ?? 0) + item.quantity);
+  }
+  return map;
+}
+
+function linesAreEqual(a: Map<string, number>, b: Map<string, number>) {
+  if (a.size !== b.size) return false;
+  for (const [key, qty] of a.entries()) {
+    if ((b.get(key) ?? 0) !== qty) return false;
+  }
+  return true;
+}
+
 export async function createOrder(
   email: string,
   body: { items: { productId: string; variantId: string; quantity: number }[]; shippingAddressId: string },
 ) {
+  await expirePendingPaymentOrders().catch((e) =>
+    console.error("[createOrder] expirePendingPaymentOrders", e),
+  );
   const userId = await requireUserId(email);
   const items = body.items;
   if (!items?.length) throw new Error("Order must have at least one item");
@@ -63,8 +98,30 @@ export async function createOrder(
   if (!address) throw new Error("Address not found with id: " + body.shippingAddressId);
   await validateUbigeo(address.department, address.province, address.district);
 
-  const orderId = randomUUID();
+  const requestedLines = aggregateRequestedLines(items);
+  const pendingOrders = await prisma.order.findMany({
+    where: { userId, status: "PENDING_PAYMENT" },
+    include: ORDER_INCLUDE,
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
   const now = new Date();
+  const reusable = pendingOrders.find((order) => {
+    if (order.expiresAt && order.expiresAt <= now) return false;
+    const sameAddress =
+      order.shippingStreet === address.street &&
+      order.shippingDepartment === address.department &&
+      order.shippingProvince === address.province &&
+      order.shippingDistrict === address.district;
+    if (!sameAddress) return false;
+    const orderLines = aggregateOrderLines(order.items);
+    return linesAreEqual(requestedLines, orderLines);
+  });
+  if (reusable) {
+    return mapOrderToHttp(reusable);
+  }
+
+  const orderId = randomUUID();
   const expiresAt = new Date(now.getTime() + 15 * 60 * 1000);
 
   let total = new Prisma.Decimal(0);
@@ -401,10 +458,33 @@ export async function listAllOrdersAdmin() {
     console.error("[listAllOrdersAdmin] expirePendingPaymentOrders", e),
   );
   const orders = await prisma.order.findMany({
-    include: ORDER_INCLUDE,
+    include: {
+      ...ORDER_INCLUDE,
+      user: {
+        select: {
+          email: true,
+          profile: {
+            select: {
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
-  return orders.map(mapOrderToHttp);
+  return orders.map((o) => {
+    const base = mapOrderToHttp(o as OrderLoaded);
+    const fullName = [o.user?.profile?.firstName, o.user?.profile?.lastName].filter(Boolean).join(" ").trim();
+    return {
+      ...base,
+      customerEmail: o.user?.email ?? null,
+      customerName: fullName || null,
+      customerPhone: o.user?.profile?.phone ?? null,
+    };
+  });
 }
 
 export async function patchOrderStatusAdmin(orderId: string, status: string) {

@@ -37,9 +37,6 @@ function buildRequestUrl(endpoint) {
   return base + normalized;
 }
 
-/**
- * Centralized fetch wrapper with automatic JSON parsing and error handling.
- */
 export async function fetchAPI(
   endpoint,
   { method = "GET", body, errorMessage = "Error en la solicitud" } = {},
@@ -53,8 +50,12 @@ export async function fetchAPI(
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: errorMessage }));
-    throw new Error(error.error || error.message || `${errorMessage} (${response.status})`);
+    const payload = await response.json().catch(() => null);
+    const isObjectPayload = payload !== null && typeof payload === "object";
+    const message = isObjectPayload
+      ? payload.error || payload.message || `${errorMessage} (${response.status})`
+      : `${errorMessage} (${response.status})`;
+    throw new Error(message);
   }
 
   if (response.status === 204) return null;

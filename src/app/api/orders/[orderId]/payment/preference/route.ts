@@ -13,9 +13,10 @@ export async function POST(req: Request, ctx: { params: Promise<{ orderId: strin
   } catch (e) {
     const status = typeof e === "object" && e !== null && "status" in e ? Number((e as { status: number }).status) : 500;
     if (status === 401) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    if (status === 403) return NextResponse.json(null, { status: 403 });
-    if (status === 400) return NextResponse.json(null, { status: 400 });
+    if (status === 403) return NextResponse.json({ error: "No autorizado para crear preferencia de pago" }, { status: 403 });
+    if (status === 400) return NextResponse.json({ error: "No se pudo crear la preferencia de pago" }, { status: 400 });
     console.error(e);
-    return NextResponse.json(null, { status: 500 });
+    const message = e instanceof Error ? e.message : "Error interno al crear preferencia";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

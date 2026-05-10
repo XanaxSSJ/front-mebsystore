@@ -36,6 +36,12 @@ export async function mpCreatePreference(params: {
 
   if (!res.ok) {
     const t = await res.text();
+    if (res.status === 403 && t.includes("PA_UNAUTHORIZED_RESULT_FROM_POLICIES")) {
+      throw new Error(
+        "Mercado Pago bloqueó la preferencia (PA_UNAUTHORIZED_RESULT_FROM_POLICIES). " +
+          "Revisa que el Access Token pertenezca a la cuenta correcta y que la cuenta/aplicación esté habilitada para Checkout Pro en este entorno.",
+      );
+    }
     throw new Error(`Mercado Pago preference error: ${res.status} ${t}`);
   }
 

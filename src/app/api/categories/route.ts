@@ -7,6 +7,16 @@ import { requireAdmin } from "@/lib/auth/session";
 export async function GET() {
   const rows = await prisma.category.findMany({
     where: { active: true },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      active: true,
+      createdAt: true,
+      _count: {
+        select: { products: true },
+      },
+    },
     orderBy: { name: "asc" },
   });
   return NextResponse.json(
@@ -16,6 +26,7 @@ export async function GET() {
       slug: c.slug,
       active: c.active,
       createdAt: c.createdAt.toISOString(),
+      productsCount: c._count.products,
     })),
   );
 }
@@ -39,6 +50,7 @@ export async function POST(req: Request) {
         slug: c.slug,
         active: c.active,
         createdAt: c.createdAt.toISOString(),
+        productsCount: 0,
       },
       { status: 201 },
     );

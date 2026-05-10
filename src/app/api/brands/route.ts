@@ -7,6 +7,17 @@ import { requireAdmin } from "@/lib/auth/session";
 export async function GET() {
   const rows = await prisma.brand.findMany({
     where: { active: true },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      logoUrl: true,
+      active: true,
+      createdAt: true,
+      _count: {
+        select: { products: true },
+      },
+    },
     orderBy: { name: "asc" },
   });
   return NextResponse.json(
@@ -16,6 +27,7 @@ export async function GET() {
         name: b.name,
         active: b.active,
         createdAt: b.createdAt.toISOString(),
+        productsCount: b._count.products,
       };
       o.slug = b.slug;
       if (b.logoUrl) o.logoUrl = b.logoUrl;
@@ -47,6 +59,7 @@ export async function POST(req: Request) {
       active: b.active,
       createdAt: b.createdAt.toISOString(),
       slug: b.slug,
+      productsCount: 0,
     };
     if (b.logoUrl) o.logoUrl = b.logoUrl;
     return NextResponse.json(o, { status: 201 });

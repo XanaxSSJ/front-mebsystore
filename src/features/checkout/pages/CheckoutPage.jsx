@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/format';
 import { CheckoutPageSkeleton } from '@/shared/components/page-skeletons';
 
 const EMPTY_ARRAY = [];
+const CHECKOUT_PENDING_ORDER_ID_KEY = 'checkout_pending_order_id';
 
 function CheckoutPage() {
   const router = useRouter();
@@ -22,8 +23,10 @@ function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [deliveryMethod, setDeliveryMethod] = useState('courier');
   const [processing, setProcessing] = useState(false);
+  const [pendingOrderId, setPendingOrderId] = useState(null);
 
   const orderIdParam = searchParams.get('orderId');
+  const activeOrderId = orderIdParam || pendingOrderId;
 
   const {
     data: profile,
@@ -40,7 +43,7 @@ function CheckoutPage() {
   const {
     data: existingOrderData,
     isLoading: existingOrderLoading,
-  } = useOrderByIdQuery(orderIdParam);
+  } = useOrderByIdQuery(activeOrderId);
 
   const addresses = addressesData ?? EMPTY_ARRAY;
 
@@ -52,7 +55,7 @@ function CheckoutPage() {
   const loading =
     profileLoading ||
     addressesLoading ||
-    (orderIdParam && existingOrderLoading);
+    (activeOrderId && existingOrderLoading);
 
   useAuthRedirect(profileError, addressesError);
 
@@ -67,6 +70,22 @@ function CheckoutPage() {
       setSelectedAddressId(existingOrder.shippingAddress.id);
     }
   }, [existingOrder]);
+
+  useEffect(() => {
+    if (orderIdParam) return;
+    const stored = window.sessionStorage.getItem(CHECKOUT_PENDING_ORDER_ID_KEY);
+    if (stored) setPendingOrderId(stored);
+  }, [orderIdParam]);
+
+  useEffect(() => {
+    if (!existingOrderData) return;
+    if (existingOrderData.status === 'PENDING_PAYMENT') {
+      window.sessionStorage.setItem(CHECKOUT_PENDING_ORDER_ID_KEY, existingOrderData.id);
+      return;
+    }
+    window.sessionStorage.removeItem(CHECKOUT_PENDING_ORDER_ID_KEY);
+    if (!orderIdParam) setPendingOrderId(null);
+  }, [existingOrderData, orderIdParam]);
 
   const calculateShippingCourier = () => {
     // Envío por courier: el cliente paga el envío al recibir el paquete
@@ -125,16 +144,20 @@ function CheckoutPage() {
           shippingAddressId: selectedAddressId,
         };
         order = await orderAPI.create(orderData);
+        setPendingOrderId(order.id);
+        window.sessionStorage.setItem(CHECKOUT_PENDING_ORDER_ID_KEY, order.id);
       }
 
       const shippingCost = calculateShipping();
       const preferenceResponse = await orderAPI.createPaymentPreference(order.id, shippingCost);
 
       clearCart();
+      window.sessionStorage.removeItem(CHECKOUT_PENDING_ORDER_ID_KEY);
       window.location.href = preferenceResponse.initPoint;
     } catch (error) {
       console.error('Error al procesar el pago:', error);
-      alert(`Error al procesar el pago: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Error desconocido al procesar el pago';
+      alert(`Error al procesar el pago: ${message}`);
       setProcessing(false);
     }
   };
