@@ -1,11 +1,16 @@
+import OptimizedImage from '@/shared/components/OptimizedImage';
+
 function ProductImageGallery({ displayImage, productName, additionalImages, displayStock }) {
   return (
     <div className="lg:col-span-7 flex flex-col gap-4">
       <div className="aspect-square w-full overflow-hidden rounded-xl bg-white shadow-lg relative max-h-[600px] lg:max-h-[700px] flex items-center justify-center">
         {displayImage ? (
-          <img
+          <OptimizedImage
             src={displayImage}
             alt={productName}
+            preset="galleryMain"
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            priority
             className="h-full w-auto object-contain transition-transform hover:scale-105 duration-700"
           />
         ) : (
@@ -25,7 +30,13 @@ function ProductImageGallery({ displayImage, productName, additionalImages, disp
         <div className="grid grid-cols-4 gap-4">
           {additionalImages.slice(0, 4).map((imgUrl, idx) => (
             <div key={idx} className={`aspect-square rounded-lg border ${imgUrl === displayImage ? 'border-primary border-2 shadow-sm' : 'border-surface/10 hover:border-accent'} overflow-hidden cursor-pointer transition-colors bg-white`}>
-              <img src={imgUrl} alt={`${productName} ángulo ${idx + 1}`} className="h-full w-full object-cover" />
+              <OptimizedImage
+                src={imgUrl}
+                alt={`${productName} ángulo ${idx + 1}`}
+                preset="galleryThumb"
+                sizes="120px"
+                className="h-full w-full object-cover"
+              />
             </div>
           ))}
         </div>

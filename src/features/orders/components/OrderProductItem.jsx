@@ -3,6 +3,7 @@ import { useProductAttributesQuery } from '@/features/products/hooks/useProductA
 import { useCartStore } from '@/store/cart.store';
 import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
+import OptimizedImage from '@/shared/components/OptimizedImage';
 
 export default function OrderProductItem({ item, product, onViewProduct, showReorder = true, showSubtotal = false }) {
   const { data: attributesData } = useProductAttributesQuery(item.productId);
@@ -78,9 +79,11 @@ export default function OrderProductItem({ item, product, onViewProduct, showReo
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pb-6 border-b border-surface/5 last:border-0 last:pb-0">
       <div className="w-20 h-20 sm:w-24 sm:h-24 bg-background-light rounded-xl flex items-center justify-center flex-shrink-0 border border-surface/10 overflow-hidden">
         {displayImage ? (
-          <img
+          <OptimizedImage
             src={displayImage}
             alt={displayTitle}
+            preset="order"
+            sizes="96px"
             className="w-full h-full object-cover"
           />
         ) : (

@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cart.store';
 import PageLayout from '@/shared/components/PageLayout';
-import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
+import OptimizedImage from '@/shared/components/OptimizedImage';
 
 function CartPage() {
   const router = useRouter();
@@ -62,9 +62,11 @@ function CartPage() {
                   <div className="col-span-1 md:col-span-6 flex items-center gap-4">
                     <div className="h-20 w-20 flex-shrink-0 bg-white rounded-lg overflow-hidden shadow-sm">
                       {item.imageUrl ? (
-                        <img
-                          src={ensureHttps(item.imageUrl)}
+                        <OptimizedImage
+                          src={item.imageUrl}
                           alt={item.productName}
+                          preset="cart"
+                          sizes="80px"
                           className="h-full w-full object-cover"
                         />
                       ) : (

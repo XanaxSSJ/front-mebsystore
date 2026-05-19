@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link';
-import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
+import OptimizedImage from '@/shared/components/OptimizedImage';
 
 function ProductCard({ product }) {
     const totalStock = product.variants?.reduce((acc, v) => acc + (v.stock || 0), 0) ?? product.stock ?? 0;
@@ -11,9 +11,11 @@ function ProductCard({ product }) {
         <Link href={`/producto/${product.id}`} className="group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 p-2">
             <div className="relative aspect-[3/4] bg-background-light rounded-lg overflow-hidden mb-4">
                 {product.imageUrl ? (
-                    <img
-                        src={ensureHttps(product.imageUrl)}
+                    <OptimizedImage
+                        src={product.imageUrl}
                         alt={product.name}
+                        preset="card"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                 ) : (

@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/cart.store';
 import { useProfileQuery } from '@/features/user/hooks/useProfileQuery';
 import { useAddressesQuery } from '@/features/user/hooks/useAddressesQuery';
 import { useOrderByIdQuery } from '@/features/orders/hooks/useOrderByIdQuery';
-import { ensureHttps } from '@/lib/url';
+import OptimizedImage from '@/shared/components/OptimizedImage';
 import { formatPrice } from '@/lib/format';
 import { CheckoutPageSkeleton } from '@/shared/components/page-skeletons';
 
@@ -266,11 +266,12 @@ function OrderSummaryCard({
           <div key={item.variantId} className="flex items-center gap-4">
             <div className="relative h-20 w-20 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-primary/10">
               {item.imageUrl ? (
-                <img
-                  src={ensureHttps(item.imageUrl)}
+                <OptimizedImage
+                  src={item.imageUrl}
                   alt={item.productName}
+                  preset="checkout"
+                  sizes="80px"
                   className="h-full w-full object-cover"
-                  loading="lazy"
                 />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-surface/30">

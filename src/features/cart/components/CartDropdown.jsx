@@ -3,8 +3,8 @@
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cart.store';
-import { ensureHttps } from '@/lib/url';
 import { formatPrice } from '@/lib/format';
+import OptimizedImage from '@/shared/components/OptimizedImage';
 import { useClickOutside } from '@/shared/hooks/useClickOutside';
 
 function CartDropdown({ isOpen, onClose }) {
@@ -61,9 +61,11 @@ function CartDropdown({ isOpen, onClose }) {
               >
                 <div className="w-16 h-20 bg-background-light rounded-lg overflow-hidden flex-shrink-0">
                   {item.imageUrl ? (
-                    <img
-                      src={ensureHttps(item.imageUrl)}
+                    <OptimizedImage
+                      src={item.imageUrl}
                       alt={item.productName}
+                      preset="cart"
+                      sizes="64px"
                       className="w-full h-full object-cover"
                     />
                   ) : (
