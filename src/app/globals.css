@@ -4,6 +4,15 @@ html:not(.material-symbols-ready) .material-symbols-outlined {
   visibility: hidden;
 }
 
+.material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 24px;
+  vertical-align: middle;
+}
+
 @theme {
   --color-primary: #982598;
   --color-accent: #E491C9;
@@ -20,10 +29,16 @@ html:not(.material-symbols-ready) .material-symbols-outlined {
   --radius-full: 9999px;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   font-family: 'Manrope', sans-serif;
   background-color: var(--color-background-light);
   color: var(--color-surface);
+  overflow-x: clip;
+  min-width: 0;
 }
 
 .glass-nav {
@@ -44,4 +59,10 @@ body {
 .carousel-item {
   scroll-snap-align: start;
   flex: 0 0 100%;
+  min-width: 0;
+}
+
+.product-grid-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
 }

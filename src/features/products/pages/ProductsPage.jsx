@@ -103,7 +103,7 @@ function ProductsPage() {
   const isGlobalLoading = isLoading || categoriesLoading || brandsLoading;
 
   return (
-    <PageLayout className="max-w-7xl mx-auto px-6 py-12 w-full">
+    <PageLayout className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
         <div className="mb-12">
           <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
             <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
@@ -112,19 +112,19 @@ function ProductsPage() {
           </nav>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <h1 className="text-5xl font-black tracking-tight text-surface">
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-surface">
                 Nuestro <span className="text-primary italic">Catalogo</span>
               </h1>
               <p className="text-surface/60 mt-3 max-w-xl">
                 Descubre nuestra colección completa de elementos esenciales de primera calidad.
               </p>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-bold text-surface/50 uppercase tracking-widest">Ordenar por:</span>
-              <div className="relative group">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
+              <span className="text-sm font-bold text-surface/50 uppercase tracking-widest shrink-0">Ordenar por:</span>
+              <div className="relative group w-full md:w-auto">
                 <select
-                  className="appearance-none bg-white border border-surface/10 rounded-xl px-6 py-3 pr-12 font-bold text-sm focus:ring-primary focus:border-primary cursor-pointer min-w-[200px]"
+                  className="appearance-none bg-white border border-surface/10 rounded-xl px-4 sm:px-6 py-3 pr-12 font-bold text-sm focus:ring-primary focus:border-primary cursor-pointer w-full md:min-w-[200px] md:w-auto"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
                 >

@@ -53,4 +53,24 @@ export const productAPI = {
             return null;
         }
     },
+
+    getByCategory: async (categoryId) => {
+        const params = new URLSearchParams({ categoryId: String(categoryId) });
+        const raw = await fetchAPI(`/products?${params}`, {
+            errorMessage: 'Error al obtener productos de la categoría',
+        });
+        return raw.map(mapProductResponse);
+    },
+
+    getRelated: async (categoryId, excludeProductId, limit = 4) => {
+        const params = new URLSearchParams({
+            categoryId: String(categoryId),
+            excludeProductId: String(excludeProductId),
+            limit: String(limit),
+        });
+        const raw = await fetchAPI(`/products?${params}`, {
+            errorMessage: 'Error al obtener productos relacionados',
+        });
+        return raw.map(mapProductResponse);
+    },
 };

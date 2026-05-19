@@ -39,7 +39,7 @@ function CartPage() {
   }
 
   return (
-    <PageLayout className="px-6 md:px-16 lg:px-24 py-12 max-w-[1600px] mx-auto w-full">
+    <PageLayout className="px-4 sm:px-6 md:px-16 lg:px-24 py-8 sm:py-12 max-w-[1600px] mx-auto w-full">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-surface">Tu Carrito</h1>
           <p className="text-surface/50 mt-2 font-medium">Explora nuestros productos y agrega lo que necesites a tu carrito.</p>

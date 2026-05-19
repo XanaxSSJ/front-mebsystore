@@ -11,12 +11,12 @@ function ColeccionesPage() {
   const categories = categoriesData ?? [];
 
   return (
-    <PageLayout className="w-full max-w-7xl mx-auto px-6 py-16 md:py-24">
+    <PageLayout className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <header className="mb-16 md:mb-24 text-center max-w-3xl mx-auto">
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary/60 mb-4 block">
             Curación
           </span>
-          <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter text-surface mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tighter text-surface mb-4 sm:mb-6">
             Explora <span className="italic font-light">Colecciones</span>
           </h1>
           <p className="text-lg md:text-xl text-surface/60 leading-relaxed">

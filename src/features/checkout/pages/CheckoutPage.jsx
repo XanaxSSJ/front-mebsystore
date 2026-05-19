@@ -194,7 +194,7 @@ function CheckoutPage() {
   const total = calculateTotal();
 
   return (
-    <PageLayout className="px-6 md:px-20 lg:px-40 py-10 flex flex-col lg:flex-row gap-12 max-w-[1440px] mx-auto w-full">
+    <PageLayout className="px-4 sm:px-6 md:px-20 lg:px-40 py-8 sm:py-10 flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-[1440px] mx-auto w-full min-w-0">
         {/* Left: steps + shipping + methods */}
         <div className="flex-1 space-y-10">
           {/* Breadcrumbs / steps */}

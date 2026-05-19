@@ -60,10 +60,20 @@ export function mapProductToHttp(p: ProductLoaded) {
 export async function listProductsPublic(params: {
   attributeValueIds: string[];
   inStockOnly: boolean;
+  categoryId?: string;
+  excludeProductId?: string;
+  limit?: number;
 }): Promise<ReturnType<typeof mapProductToHttp>[]> {
-  const { attributeValueIds, inStockOnly } = params;
+  const { attributeValueIds, inStockOnly, categoryId, excludeProductId, limit } = params;
 
   let where: Prisma.ProductWhereInput = { active: true };
+
+  if (categoryId) {
+    where = { ...where, categoryId };
+  }
+  if (excludeProductId) {
+    where = { ...where, id: { not: excludeProductId } };
+  }
 
   if (attributeValueIds.length > 0) {
     const idList = attributeValueIds.map((id) => Prisma.sql`${id}::uuid`);
@@ -78,18 +88,21 @@ export async function listProductsPublic(params: {
     `;
     const ids = rows.map((r) => r.id);
     if (ids.length === 0) return [];
-    where = { id: { in: ids }, active: true };
+    where = { ...where, id: { in: ids } };
   } else if (inStockOnly) {
     where = {
-      active: true,
+      ...where,
       variants: { some: { stock: { gt: 0 } } },
     };
   }
+
+  const take = limit != null && limit > 0 ? Math.min(limit, 50) : undefined;
 
   const products = await prisma.product.findMany({
     where,
     include: productFullInclude,
     orderBy: { createdAt: "desc" },
+    ...(take ? { take } : {}),
   });
 
   return products.map(mapProductToHttp);

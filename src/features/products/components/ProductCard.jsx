@@ -8,7 +8,7 @@ function ProductCard({ product }) {
     const totalStock = product.variants?.reduce((acc, v) => acc + (v.stock || 0), 0) ?? product.stock ?? 0;
 
     return (
-        <Link href={`/producto/${product.id}`} className="group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 p-2">
+        <Link href={`/producto/${product.id}`} className="product-grid-item group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 p-2">
             <div className="relative aspect-[3/4] bg-background-light rounded-lg overflow-hidden mb-4">
                 {product.imageUrl ? (
                     <OptimizedImage
@@ -33,13 +33,6 @@ function ProductCard({ product }) {
                 {product.price > 150 && totalStock > 0 && (
                     <span className="absolute top-4 left-4 bg-primary text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Nuevo</span>
                 )}
-
-                <button
-                    onClick={(e) => e.preventDefault()}
-                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center text-surface hover:text-primary transition-colors hover:scale-110 active:scale-95"
-                >
-                    <span className="material-symbols-outlined text-xl">favorite</span>
-                </button>
             </div>
 
             <div className="px-2 pb-2">

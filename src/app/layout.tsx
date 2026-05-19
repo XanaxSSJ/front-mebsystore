@@ -1,8 +1,7 @@
-// app/layout.tsx
 import "./globals.css";
 import Providers from "@/shared/providers/Providers";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import DeferredVercelInsights from "@/shared/components/DeferredVercelInsights";
+import { SITE_URL } from "@/lib/site";
 import { Manrope } from "next/font/google";
 
 const manrope = Manrope({
@@ -13,6 +12,7 @@ const manrope = Manrope({
 
 
 export const metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Mebsystore",
   description: "Tienda online de ropa moderna y exclusiva al mejor precio",
   keywords: "tienda, ecommerce, productos, Mebsystore",
@@ -25,7 +25,7 @@ export const metadata = {
   openGraph: {
     title: "Mebsystore",
     description: "Tienda online de ropa moderna y exclusiva al mejor precio",
-    url: "https://www.mebsy.store",
+    url: SITE_URL,
     siteName: "Mebsystore",
     images: ["/og-image.webp"],
     locale: "es_ES",
@@ -53,8 +53,9 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -63,8 +64,7 @@ export default function RootLayout({
           <style>{`.material-symbols-outlined { visibility: visible !important; }`}</style>
         </noscript>
         <Providers>{children}</Providers>
-        <Analytics />
-        <SpeedInsights />
+        <DeferredVercelInsights />
       </body>
     </html>
   );

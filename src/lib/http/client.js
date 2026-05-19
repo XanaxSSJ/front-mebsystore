@@ -62,8 +62,3 @@ export async function fetchAPI(
 
   return response.json();
 }
-
-/** @deprecated Use fetchAPI instead */
-export const getAuthHeaders = () => ({
-  "Content-Type": "application/json",
-});

@@ -6,7 +6,9 @@ import { formatPrice } from '@/lib/format';
 import OptimizedImage from '@/shared/components/OptimizedImage';
 
 export default function OrderProductItem({ item, product, onViewProduct, showReorder = true, showSubtotal = false }) {
-  const { data: attributesData } = useProductAttributesQuery(item.productId);
+  const { data: attributesData } = useProductAttributesQuery(
+    showReorder && product ? item.productId : null,
+  );
   const addToCart = useCartStore((state) => state.addToCart);
 
   const variant = useMemo(() => {

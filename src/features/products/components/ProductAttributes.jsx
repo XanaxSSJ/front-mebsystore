@@ -8,7 +8,7 @@ function ProductAttributes({ attributes, selectedAttributes, onSelectAttribute }
           <div className="flex justify-between items-center max-w-sm">
             <label className="text-sm font-bold text-surface uppercase tracking-wider">{attr.displayName}</label>
           </div>
-          <div className="flex flex-wrap gap-2 max-w-sm">
+          <div className="flex flex-wrap gap-2 w-full max-w-full sm:max-w-sm">
             {attr.values.map(val => (
               <button
                 key={val.id}

@@ -29,7 +29,7 @@ function CartDropdown({ isOpen, onClose }) {
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-0 top-full pt-2 w-80 z-[60]"
+      className="fixed inset-x-4 top-[4.25rem] z-[60] sm:absolute sm:inset-x-auto sm:right-0 sm:left-auto sm:top-full sm:pt-2 sm:w-80"
     >
       <div className="bg-white rounded-2xl shadow-2xl border border-surface/5 overflow-hidden">
         {/* Header */}

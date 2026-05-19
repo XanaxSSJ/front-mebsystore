@@ -39,7 +39,7 @@ function ProfileDropdown({ isOpen, onClose, userEmail }) {
   if (!isOpen) return null;
 
   return (
-    <div ref={dropdownRef} className="absolute right-0 top-full pt-2 w-56 z-[60]">
+    <div ref={dropdownRef} className="absolute right-0 top-full pt-2 w-[min(14rem,calc(100vw-2rem))] sm:w-56 z-[60]">
       <div className="bg-white rounded-2xl shadow-2xl border border-surface/5 overflow-hidden">
         <div className="p-4 border-b border-surface/5">
           <p className="text-[10px] font-bold text-surface/40 uppercase tracking-widest mb-1">

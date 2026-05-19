@@ -42,7 +42,7 @@ function OrdersPage() {
   const ordersDataSafe = ordersData ?? EMPTY_ARRAY;
   const productsDataSafe = productsData ?? EMPTY_ARRAY;
 
-  const loading = ordersLoading || productsLoading;
+  const loading = ordersLoading;
 
   const products = useMemo(() => {
     const map = {};

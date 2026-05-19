@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
 import { getProductById, updateProduct } from "@/server/product-service";
+import { PUBLIC_GET_CACHE_HEADERS } from "@/lib/http/public-cache";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ productId: string }> }) {
   const { productId } = await ctx.params;
   const p = await getProductById(productId, { activeOnly: true });
   if (!p) return NextResponse.json({ error: "Product not found" }, { status: 404 });
-  return NextResponse.json(p);
+  return NextResponse.json(p, { headers: PUBLIC_GET_CACHE_HEADERS });
 }
 
 export async function PUT(req: Request, ctx: { params: Promise<{ productId: string }> }) {

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { CATALOG_STALE_MS } from '@/lib/query-client';
 import { productAPI } from '../api/products.api';
 
 /**
@@ -16,6 +17,7 @@ export function useProductsQuery(options = {}) {
       hasFilters
         ? productAPI.getAllWithFilters({ attributeValueIds: attributeValueIds ?? null, inStockOnly: inStockOnly ?? false })
         : productAPI.getAll(),
+    staleTime: CATALOG_STALE_MS,
   });
 }
 

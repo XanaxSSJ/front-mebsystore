@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import PageLayout from '@/shared/components/PageLayout';
 import ProductCard from '../components/ProductCard';
 import { useSearchStore } from '@/store/search.store';
-import { useProductsQuery } from '../hooks/useProductsQuery';
+import { productAPI } from '../api/products.api';
 import { useCategoriesQuery } from '@/features/categories/hooks/useCategoriesQuery';
 import { productMatchesQuery } from '../utils/search';
+import { CATALOG_STALE_MS } from '@/lib/query-client';
 
 function CategoryPage() {
   const { slug } = useParams();
@@ -16,26 +18,29 @@ function CategoryPage() {
     isLoading: categoriesLoading,
     error: categoriesError,
   } = useCategoriesQuery();
-  const {
-    data: productsData,
-    isLoading: productsLoading,
-    error: productsError,
-  } = useProductsQuery();
-
-  const loading = categoriesLoading || productsLoading;
-  const error = categoriesError || productsError;
 
   const category = useMemo(() => {
     if (!categoriesData) return null;
     return categoriesData.find((cat) => cat.slug === slug) ?? null;
   }, [categoriesData, slug]);
 
-  const categoryProducts = useMemo(() => {
-    if (!productsData || !category) return [];
-    return productsData.filter(
-      (product) => product.categoryId === category.id,
-    );
-  }, [productsData, category]);
+  const categoryId = category?.id;
+
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    error: productsError,
+  } = useQuery({
+    queryKey: ['products', 'category', categoryId],
+    queryFn: () => productAPI.getByCategory(categoryId),
+    enabled: Boolean(categoryId),
+    staleTime: CATALOG_STALE_MS,
+  });
+
+  const loading = categoriesLoading || productsLoading;
+  const error = categoriesError || productsError;
+
+  const categoryProducts = productsData ?? [];
 
   const [sortOrder, setSortOrder] = useState('newest');
 
@@ -59,8 +64,8 @@ function CategoryPage() {
   }, [categoryProducts, searchQuery, sortOrder]);
 
   return (
-    <PageLayout className="w-full max-w-7xl mx-auto px-6 py-8">
-        <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
+    <PageLayout className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
           <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
           <Link href="/productos" className="hover:text-primary transition-colors">Colecciones</Link>
@@ -97,7 +102,7 @@ function CategoryPage() {
             <header className="mb-16">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div className="max-w-2xl">
-                  <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-surface mb-6 uppercase">
+                  <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-surface mb-4 sm:mb-6 uppercase break-words">
                     {category.name}
                   </h1>
                   {category.description && (

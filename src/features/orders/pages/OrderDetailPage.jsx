@@ -31,7 +31,7 @@ function OrderDetailPage() {
     isLoading: productsLoading,
   } = useProductsQuery();
 
-  const loading = orderLoading || productsLoading;
+  const loading = orderLoading;
 
   const productsDataSafe = productsData ?? EMPTY_ARRAY;
 

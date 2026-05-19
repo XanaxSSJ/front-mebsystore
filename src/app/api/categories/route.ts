@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/slug";
 import { requireAdmin } from "@/lib/auth/session";
+import { PUBLIC_GET_CACHE_HEADERS } from "@/lib/http/public-cache";
 
 export async function GET() {
   const rows = await prisma.category.findMany({
@@ -28,6 +29,7 @@ export async function GET() {
       createdAt: c.createdAt.toISOString(),
       productsCount: c._count.products,
     })),
+    { headers: PUBLIC_GET_CACHE_HEADERS },
   );
 }
 

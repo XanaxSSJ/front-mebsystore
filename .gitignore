@@ -15,9 +15,11 @@
 
 # next.js
 /.next/
+/.agents/
 /.idea/
 /out/
 
+skills-lock.json
 # production
 /build
 

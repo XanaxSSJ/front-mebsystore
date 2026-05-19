@@ -6,7 +6,8 @@ import { useParams } from 'next/navigation';
 import PageLayout from '@/shared/components/PageLayout';
 import { useCartStore } from '@/store/cart.store';
 import { ensureHttps } from '@/lib/url';
-import { useProductsQuery } from '../hooks/useProductsQuery';
+import { useProductQuery } from '../hooks/useProductQuery';
+import { useRelatedProductsQuery } from '../hooks/useRelatedProductsQuery';
 import { useCategoriesQuery } from '@/features/categories/hooks/useCategoriesQuery';
 import { useProductAttributesQuery } from '../hooks/useProductAttributesQuery';
 import { formatPrice } from '@/lib/format';
@@ -17,8 +18,6 @@ import ProductInfoTabs from '../components/ProductInfoTabs';
 import RelatedProducts from '../components/RelatedProducts';
 import { ProductDetailSkeleton } from '@/shared/components/page-skeletons';
 
-const MAX_RELATED_PRODUCTS = 4;
-
 function ProductDetailPage() {
   const { id } = useParams();
   const addToCart = useCartStore((state) => state.addToCart);
@@ -26,10 +25,10 @@ function ProductDetailPage() {
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
   const {
-    data: productsData,
-    isLoading: productsLoading,
-    error: productsError,
-  } = useProductsQuery();
+    data: product,
+    isLoading: productLoading,
+    error: productError,
+  } = useProductQuery(id);
 
   const {
     data: categoriesData,
@@ -42,13 +41,12 @@ function ProductDetailPage() {
     isLoading: attributesLoading,
   } = useProductAttributesQuery(id);
 
-  const loading = productsLoading || categoriesLoading || attributesLoading;
-  const error = productsError || categoriesError;
+  const {
+    data: relatedProducts = [],
+  } = useRelatedProductsQuery(product?.categoryId, product?.id);
 
-  const product = useMemo(() => {
-    if (!productsData) return null;
-    return productsData.find((p) => String(p.id) === String(id)) ?? null;
-  }, [productsData, id]);
+  const loading = productLoading || categoriesLoading || attributesLoading;
+  const error = productError || categoriesError;
 
   const category = useMemo(() => {
     if (!categoriesData || !product) return null;
@@ -57,16 +55,6 @@ function ProductDetailPage() {
 
   const categoryName = category?.name ?? '';
   const categorySlug = category?.slug ?? '';
-
-  const relatedProducts = useMemo(() => {
-    if (!productsData || !product) return [];
-    const sameCategory = productsData
-      .filter((p) => String(p.id) !== String(product.id))
-      .filter((p) => String(p.categoryId) === String(product.categoryId));
-
-    const shuffled = [...sameCategory].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, MAX_RELATED_PRODUCTS);
-  }, [productsData, product]);
 
   const activeVariant = useMemo(() => {
     if (!product || !product.variants || product.variants.length === 0) return null;
@@ -156,9 +144,9 @@ function ProductDetailPage() {
   const additionalImages = product?.images?.map(img => ensureHttps(img.imageUrl)) || [];
 
   return (
-    <PageLayout className="max-w-7xl mx-auto w-full px-4 lg:px-6 py-8 lg:py-12">
+    <PageLayout className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
+        <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
           <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
           <Link href="/productos" className="hover:text-primary transition-colors">Colecciones</Link>
@@ -169,10 +157,10 @@ function ProductDetailPage() {
             </>
           )}
           <span className="material-symbols-outlined text-xs">chevron_right</span>
-          <span className="text-surface">{product?.name}</span>
+          <span className="text-surface truncate max-w-full">{product?.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           <ProductImageGallery
             displayImage={displayImage}
             productName={product.name}
@@ -196,11 +184,11 @@ function ProductDetailPage() {
                 </div>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-black text-surface leading-tight tracking-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-surface leading-tight tracking-tight">
                 {product.name}
               </h1>
 
-              <p className="text-3xl font-bold text-primary">{formatPrice(displayPrice)}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{formatPrice(displayPrice)}</p>
 
               <p className="text-surface/70 leading-relaxed max-w-md text-lg">
                 {product.description || "Experimenta lo máximo en lujo sostenible. Elaborado artesanalmente con cuidado premium, ofreciendo una suavidad inigualable y regulación térmica natural para una elegancia durante todo el año."}

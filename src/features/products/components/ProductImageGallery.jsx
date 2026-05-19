@@ -3,7 +3,7 @@ import OptimizedImage from '@/shared/components/OptimizedImage';
 function ProductImageGallery({ displayImage, productName, additionalImages, displayStock }) {
   return (
     <div className="lg:col-span-7 flex flex-col gap-4">
-      <div className="aspect-square w-full overflow-hidden rounded-xl bg-white shadow-lg relative max-h-[600px] lg:max-h-[700px] flex items-center justify-center">
+      <div className="aspect-square w-full overflow-hidden rounded-xl bg-white shadow-lg relative max-h-[min(90vw,600px)] lg:max-h-[700px] flex items-center justify-center">
         {displayImage ? (
           <OptimizedImage
             src={displayImage}

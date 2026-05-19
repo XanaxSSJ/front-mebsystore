@@ -1,14 +1,25 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
 import { createProduct, listProductsPublic } from "@/server/product-service";
+import { PUBLIC_GET_CACHE_HEADERS } from "@/lib/http/public-cache";
 
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
     const attributeValueIds = url.searchParams.getAll("attributeValueIds");
     const inStockOnly = url.searchParams.get("inStockOnly") === "true";
-    const data = await listProductsPublic({ attributeValueIds, inStockOnly });
-    return NextResponse.json(data);
+    const categoryId = url.searchParams.get("categoryId") ?? undefined;
+    const excludeProductId = url.searchParams.get("excludeProductId") ?? undefined;
+    const limitParam = url.searchParams.get("limit");
+    const limit = limitParam ? Number(limitParam) : undefined;
+    const data = await listProductsPublic({
+      attributeValueIds,
+      inStockOnly,
+      categoryId,
+      excludeProductId,
+      limit: Number.isFinite(limit) ? limit : undefined,
+    });
+    return NextResponse.json(data, { headers: PUBLIC_GET_CACHE_HEADERS });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Error al obtener productos" }, { status: 500 });
