@@ -14,8 +14,9 @@ function ProductAttributes({ attributes, selectedAttributes, onSelectAttribute }
             {attr.values.map(val => (
               <button
                 key={val.id}
+                type="button"
                 onClick={() => onSelectAttribute(attr.id, val.id)}
-                className={`py-3 px-4 rounded transition-colors text-sm ${selectedAttributes[attr.id] === val.id ? 'border-2 border-primary bg-primary/5 font-bold text-primary' : 'border border-surface/20 hover:border-primary font-medium text-surface'}`}
+                className={`min-h-11 py-2.5 px-4 rounded-lg transition-colors text-sm touch-manipulation ${selectedAttributes[attr.id] === val.id ? 'border-2 border-primary bg-primary/5 font-bold text-primary' : 'border border-surface/20 hover:border-primary font-medium text-surface'}`}
               >
                 {val.value}
               </button>

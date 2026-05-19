@@ -159,7 +159,7 @@ function ProductDetailPage() {
         <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
           <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
-          <Link href="/productos" className="hover:text-primary transition-colors">Colecciones</Link>
+          <Link href="/colecciones" className="hover:text-primary transition-colors">Colecciones</Link>
           {categoryName && categorySlug && (
             <>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
@@ -178,7 +178,7 @@ function ProductDetailPage() {
             displayStock={displayStock}
           />
 
-          <div className="lg:col-span-5 flex flex-col gap-8 lg:pl-4">
+          <div className="lg:col-span-5 flex flex-col gap-6 sm:gap-8 lg:pl-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2 flex-wrap">
                 {displayPrice > 150 && (

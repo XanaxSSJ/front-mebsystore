@@ -54,8 +54,8 @@ function Home() {
                   Curando un mundo de esenciales de alta gama diseñados para el minimalista moderno. Donde la calidad se encuentra con la elegancia en cada puntada.
                 </p>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-4">
-                  <Link href="/productos" className="bg-primary text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:shadow-2xl hover:shadow-primary/30 transition-all transform hover:-translate-y-1 inline-block text-center">
-                    Explorar Colección
+                  <Link href="/colecciones" className="bg-primary text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:shadow-2xl hover:shadow-primary/30 transition-all transform hover:-translate-y-1 inline-block text-center">
+                    Explorar Colecciones
                   </Link>
                   <Link href="/productos" className="bg-white text-surface border border-surface/10 px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-surface hover:text-white transition-all inline-block text-center">
                     Ver Productos

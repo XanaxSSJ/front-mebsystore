@@ -71,7 +71,7 @@ function CategoryPage() {
         <nav className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-surface/40 mb-4">
           <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
-          <Link href="/productos" className="hover:text-primary transition-colors">Colecciones</Link>
+          <Link href="/colecciones" className="hover:text-primary transition-colors">Colecciones</Link>
           <span className="material-symbols-outlined text-xs">chevron_right</span>
           <span className="text-surface">{category?.name || 'Categoría'}</span>
         </nav>
@@ -123,13 +123,13 @@ function CategoryPage() {
               </div>
             </header>
 
-            <div className="flex flex-wrap items-center justify-end gap-6 py-6 border-y border-surface/10 mb-12">
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-surface/40">Ordenar Por</span>
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-end gap-4 py-6 border-y border-surface/10 mb-12">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-surface/40 shrink-0">Ordenar por</span>
                 <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
-                  className="bg-transparent border-none text-xs font-bold uppercase tracking-widest focus:ring-0 cursor-pointer p-0 pr-8"
+                  className="w-full sm:w-auto bg-white sm:bg-transparent border border-surface/10 sm:border-none rounded-xl sm:rounded-none px-4 py-3 sm:py-0 text-xs font-bold uppercase tracking-widest focus:ring-primary focus:border-primary cursor-pointer sm:pr-8"
                 >
                   <option value="newest">Más Recientes</option>
                   <option value="price-asc">Precio: Menor a Mayor</option>
